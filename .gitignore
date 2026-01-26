@@ -1,16 +1,9 @@
-# Compiled class file
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
 *.class
-
-# Log file
-*.log
-
-# BlueJ files
-*.ctxt
-
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
-# Package Files #
 *.jar
 *.war
 *.nar
@@ -19,6 +12,41 @@
 *.tar.gz
 *.rar
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+*.log
+*.log.*
+logs/
+
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+.settings/
+.classpath
+.project
+.factorypath
+
+*.iml
+*.ipr
+*.iws
+.idea/
+*.idea
+
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+.DS_Store
+Thumbs.db
+
+*.env
+*.env.*
+!*.env.example
+
+application-local.properties
+application-dev.properties
+application-prod.properties
+
 hs_err_pid*
 replay_pid*
+HELP.md
