@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:16
+    container_name: gestorfacil_db
+    environment:
+      POSTGRES_DB: gestorfacil_db
+      POSTGRES_USER: admindb
+      POSTGRES_PASSWORD: admindb123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: always
+
+  app:
+    build: .
+    container_name: gestorfacil-app
+    depends_on:
+      - db
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+   
+
+volumes:
+  postgres_data:
+
