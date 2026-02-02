@@ -1,9 +1,12 @@
-version: '3.8'
-
 services:
   db:
     image: postgres:16
     container_name: gestorfacil_db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admindb -d gestorfacil_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     environment:
       POSTGRES_DB: gestorfacil_db
       POSTGRES_USER: admindb
@@ -18,12 +21,15 @@ services:
     build: .
     container_name: gestorfacil-app
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+
     ports:
       - "8080:8080"
     environment:
       SPRING_PROFILES_ACTIVE: dev
-   
+      SPRING_SECURITY_USER_NAME: jonatas
+      SPRING_SECURITY_USER_PASSWORD: jonatas88199115
 
 volumes:
   postgres_data:
