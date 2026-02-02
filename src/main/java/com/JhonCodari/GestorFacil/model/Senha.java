@@ -11,5 +11,5 @@ public record Senha(
         regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&].+$",
         message = "A senha deve conter pelo menos uma letra maiuscula, uma letra minuscula, um numero e um caractere especial."
     )
-    String senha
+    String valor
 ) {}

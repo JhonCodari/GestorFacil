@@ -1,14 +1,27 @@
 package com.JhonCodari.GestorFacil.dto;
 
 import com.JhonCodari.GestorFacil.model.NomeCompleto;
+import com.JhonCodari.GestorFacil.model.Senha;
 import com.JhonCodari.GestorFacil.model.EmailUsuario;
 
+import jakarta.validation.Valid;
+
 public record UsuarioCadastroDTO(
-    NomeCompleto nomeCompleto,  
+
+    @Valid
+    NomeCompleto nomeCompleto,
+
+    @Valid
     EmailUsuario email,
-    String senha
+
+    @Valid
+    Senha senha
 ) {
     public String emailValor() {
         return email.valor();
+    }
+
+    public String senhaValor() {
+        return senha.valor();
     }
 }

@@ -30,25 +30,6 @@ public class UsuarioController {
     public ResponseEntity<UsuarioRespostaDTO> cadastro(@RequestBody @Valid UsuarioCadastroDTO usuarioCadastroDTO) {
         UsuarioRespostaDTO resposta = this.usuarioService.cadastrarUsuario(usuarioCadastroDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(resposta);
-    }
-
-    // @PostMapping("/login")
-    // public ResponseEntity<String> login(@RequestBody @Valid UsuarioLoginDTO usuarioLoginDTO) {
-    //     return ResponseEntity.ok("Login realizado com sucesso!");
-    // }
-
-    // @PostMapping("/recuperar-senha")
-    // public ResponseEntity<Void> solicitarRecuperacaoSenha(@RequestBody @Valid RecuperacaoSenhaDTO recuperacaoSenhaDTO) {
-    //     //TODO: process POST request
-        
-    //     return null;
-    // }
-
-    // @PostMapping("/alterar-senha")
-    // public ResponseEntity<Void> alterarSenha(@RequestBody @Valid AlterarSenhaDTO alterarSenhaDTO) {
-    //     //TODO: process POST request
-        
-    //     return null;
-    // }   
+    }   
     
 }

@@ -27,7 +27,7 @@ public class UsuarioServiceImpl implements UsuarioService {
         if (this.usuarioRepository.existsByEmailValor(usuarioCadastroDTO.emailValor())) 
             throw new EmailJaCadastradoException("Este E-mail já está em uso.");
 
-        String senhaHash = passwordEncoder.encode(usuarioCadastroDTO.senha());
+        String senhaHash = passwordEncoder.encode(usuarioCadastroDTO.senhaValor());
 
         Usuario usuario = new Usuario(
             usuarioCadastroDTO.nomeCompleto(),
