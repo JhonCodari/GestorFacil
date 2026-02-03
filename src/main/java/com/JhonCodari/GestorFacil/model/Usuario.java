@@ -45,7 +45,7 @@ public class Usuario {
     public Usuario(NomeCompleto nomeCompleto, EmailUsuario email, String senhaHash) {
         this.nomeCompleto = nomeCompleto;
         this.email = email;
-        this.senhaHash = senhaHash;
+        this.senhaHash = senhaHash;//transformar isso em objeto senha e no objeto retornar o hash
     }
 
     public Long getId() {

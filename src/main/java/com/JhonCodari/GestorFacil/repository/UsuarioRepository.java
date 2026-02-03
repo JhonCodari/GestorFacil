@@ -8,5 +8,6 @@ import com.JhonCodari.GestorFacil.model.Usuario;
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Long>{
     boolean existsByEmailValor(String valor);
+    Usuario findByEmailValor(String valor);
     
 }
