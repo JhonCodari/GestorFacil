@@ -25,10 +25,10 @@ public class AutenticacaoServiceImpl implements AutenticacaoService {
     }
 
     public String autenticar(UsuarioLoginDTO usuarioLoginDTO) {
-        Usuario usuarioCadastradoNoBancoDeDados = usuarioRepository.findByEmailValor(usuarioLoginDTO.emailValor());
-        boolean senhaValida = passwordEncoder.matches(usuarioLoginDTO.senhaValor(), usuarioCadastradoNoBancoDeDados.getSenhaHash());
+        Usuario usuario = usuarioRepository.findByEmailValor(usuarioLoginDTO.emailValor());
+        boolean senhaValida = passwordEncoder.matches(usuarioLoginDTO.senhaValor(), usuario.getSenhaHash());
         if (!senhaValida) throw new CredenciaisInvalidasException("usuario ou senha inválidos.");
-        String token = jwtTokenProvider.gerarToken(usuarioCadastradoNoBancoDeDados.getEmail().valor());
+        String token = jwtTokenProvider.gerarToken(usuario.getEmail().valor());
         return token;
     }
 }
