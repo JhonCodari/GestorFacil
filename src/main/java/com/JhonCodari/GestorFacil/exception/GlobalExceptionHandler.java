@@ -48,6 +48,11 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body("Falha ao cadastrar e-mail: " + ex.getMessage());
     }
 
+    @ExceptionHandler(CredenciaisInvalidasException.class)
+    public ResponseEntity<String> tratarCredenciaisInvalidasException(CredenciaisInvalidasException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciais inválidas: " + ex.getMessage());
+    }
+
     @ExceptionHandler(ConfirmacaoEmailException.class)
     public ResponseEntity<String> tratarConfirmacaoEmailException(ConfirmacaoEmailException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro na confirmação de e-mail: " + ex.getMessage());
