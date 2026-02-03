@@ -21,7 +21,7 @@ public class AutenticacaoController {
         this.autenticacaoService = autenticacaoService;
     }
 
-    @PostMapping("/login")// Autentica e devolve os Tokens
+    @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody @Valid UsuarioLoginDTO usuarioLoginDTO) {
         String token = autenticacaoService.autenticar(usuarioLoginDTO);
         return ResponseEntity.ok(token);

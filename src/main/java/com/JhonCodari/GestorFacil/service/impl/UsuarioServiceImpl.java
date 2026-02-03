@@ -1,6 +1,5 @@
 package com.JhonCodari.GestorFacil.service.impl;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.JhonCodari.GestorFacil.dto.UsuarioCadastroDTO;
@@ -14,11 +13,9 @@ import com.JhonCodari.GestorFacil.model.Usuario;
 public class UsuarioServiceImpl implements UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
-    private final PasswordEncoder passwordEncoder;
 
-    public UsuarioServiceImpl(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
+    public UsuarioServiceImpl(UsuarioRepository usuarioRepository) {
         this.usuarioRepository = usuarioRepository;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -27,14 +24,12 @@ public class UsuarioServiceImpl implements UsuarioService {
         if (this.usuarioRepository.existsByEmailValor(usuarioCadastroDTO.emailValor())) 
             throw new EmailJaCadastradoException("Este E-mail já está em uso.");
 
-        String senhaHash = passwordEncoder.encode(usuarioCadastroDTO.senhaValor());
-
-        Usuario usuario = new Usuario(
+        var usuario = new Usuario(
             usuarioCadastroDTO.nomeCompleto(),
             usuarioCadastroDTO.email(),
-            senhaHash
+            usuarioCadastroDTO.senha()
         );
-        Usuario usuarioSalvo = this.usuarioRepository.save(usuario);
+        var usuarioSalvo = this.usuarioRepository.save(usuario);
         return new UsuarioRespostaDTO(
             usuarioSalvo.getId(),
             usuarioSalvo.getNomeCompleto(),

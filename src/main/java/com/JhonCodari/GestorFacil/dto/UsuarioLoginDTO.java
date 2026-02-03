@@ -13,11 +13,11 @@ public record UsuarioLoginDTO(
     @Valid
     Senha senha
 ) {
-    public String emailValor() {
+    public String getEnderecoEmail() {
         return email.valor();
     }
 
-    public String senhaValor() {
+    public String getSenhaValor() {
         return senha.valor();
     }
 }

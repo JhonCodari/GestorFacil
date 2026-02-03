@@ -1,5 +1,8 @@
 package com.JhonCodari.GestorFacil.model;
 
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -12,4 +15,15 @@ public record Senha(
         message = "A senha deve conter pelo menos uma letra maiuscula, uma letra minuscula, um numero e um caractere especial."
     )
     String valor
-) {}
+) {
+
+    private static final PasswordEncoder codificador = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    
+    public String hash() {
+        return codificador.encode(valor);
+    }
+
+    public boolean confere(String hashArmazenado) {
+        return codificador.matches(valor, hashArmazenado);
+    }
+}

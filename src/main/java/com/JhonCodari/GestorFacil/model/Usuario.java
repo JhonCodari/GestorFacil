@@ -42,10 +42,10 @@ public class Usuario {
 
     protected Usuario() {}
 
-    public Usuario(NomeCompleto nomeCompleto, EmailUsuario email, String senhaHash) {
+    public Usuario(NomeCompleto nomeCompleto, EmailUsuario email, Senha senha) {
         this.nomeCompleto = nomeCompleto;
         this.email = email;
-        this.senhaHash = senhaHash;//transformar isso em objeto senha e no objeto retornar o hash
+        this.senhaHash = senha.hash();
     }
 
     public Long getId() {
@@ -58,6 +58,10 @@ public class Usuario {
 
     public EmailUsuario getEmail() {
         return email;
+    }
+
+    public String getEnderecoEmail() {
+        return email.valor();
     }
     
     public String getSenhaHash() {
