@@ -17,13 +17,22 @@ services:
       - postgres_data:/var/lib/postgresql/data
     restart: always
 
+  redis:
+    image: redis:7
+    container_name: gestorfacil_redis
+    ports:
+      - "6379:6379"
+    restart: always
+  
   app:
     build: .
     container_name: gestorfacil-app
     depends_on:
       db:
         condition: service_healthy
-
+      redis:
+        condition: service_started
+        
     ports:
       - "8080:8080"
       - "5005:5005"

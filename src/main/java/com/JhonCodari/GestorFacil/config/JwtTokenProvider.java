@@ -27,9 +27,7 @@ public class JwtTokenProvider {
                 .setIssuedAt(agora)
                 .setExpiration(dataExpiracao)
                 .signWith(chaveSecreta)
-                .compact();
-
-       
+                .compact();       
     }
 
     public String extrairEmail(Token token) {
@@ -51,6 +49,17 @@ public class JwtTokenProvider {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    public long getTempoExpiracao(Token token) {
+        Date dataExpiracao = Jwts.parserBuilder()
+                .setSigningKey(chaveSecreta)
+                .build()
+                .parseClaimsJws(token.valor())
+                .getBody()
+                .getExpiration();
+        Date agora = new Date();
+        return dataExpiracao.getTime() - agora.getTime();
     }
     
 }

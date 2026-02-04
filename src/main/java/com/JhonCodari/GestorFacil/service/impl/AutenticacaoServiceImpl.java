@@ -1,9 +1,9 @@
 package com.JhonCodari.GestorFacil.service.impl;
 
 import org.springframework.stereotype.Service;
+import org.springframework.data.redis.core.StringRedisTemplate;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import com.JhonCodari.GestorFacil.config.JwtTokenProvider;
 import com.JhonCodari.GestorFacil.dto.UsuarioLoginDTO;
@@ -15,14 +15,14 @@ import com.JhonCodari.GestorFacil.model.valueobjects.Token;
 @Service
 public class AutenticacaoServiceImpl implements AutenticacaoService {
 
-    private final Set<String> tokensInvalidos = new HashSet<>();
-
+    private StringRedisTemplate redisTemplate;
     private UsuarioRepository usuarioRepository;
     private JwtTokenProvider jwtTokenProvider;
 
-    public AutenticacaoServiceImpl(UsuarioRepository usuarioRepository, JwtTokenProvider jwtTokenProvider) {
+    public AutenticacaoServiceImpl(UsuarioRepository usuarioRepository, JwtTokenProvider jwtTokenProvider, StringRedisTemplate redisTemplate) {
         this.usuarioRepository = usuarioRepository;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.redisTemplate = redisTemplate;
     }
 
     public String autenticar(UsuarioLoginDTO usuarioLogin) {
@@ -35,10 +35,21 @@ public class AutenticacaoServiceImpl implements AutenticacaoService {
 
     @Override
     public String invalidarToken(Token token) {
-        if (tokensInvalidos.contains(token.semPrefixoBearer())) 
-            throw new IllegalArgumentException("Token inválido.");
+        if (isTokenInvalidado(token)) throw new IllegalArgumentException("Token inválido.");
 
-        tokensInvalidos.add(token.semPrefixoBearer());
+        adicionarTokenNaBlackList(token, jwtTokenProvider.getTempoExpiracao(token));
         return "Logout Realizado com sucesso!.";
+    }
+
+    private void adicionarTokenNaBlackList(Token token, long tempoExpiracaoMillis) {
+        redisTemplate.opsForValue().set(
+            token.valor(), "invalidado", tempoExpiracaoMillis, TimeUnit.MILLISECONDS
+        );
+    }
+
+    private boolean isTokenInvalidado(Token token) {
+        return Boolean.TRUE.equals(
+            redisTemplate.hasKey(token.valor())
+        );
     }
 }
