@@ -13,12 +13,12 @@ public record Token(
     )
     String valor
 
-) {
-    public String semPrefixoBearer() {
-        return this.valor.startsWith("Bearer ") ? this.valor.substring(7) : this.valor;
+) {    
+    public Token {
+        if (valor.startsWith("Bearer ")) valor = valor.substring(7);
     }
 
     public String comPrefixoBearer() {
         return this.valor.startsWith("Bearer ") ? this.valor : "Bearer " + this.valor;
-    }    
+    }   
 }
