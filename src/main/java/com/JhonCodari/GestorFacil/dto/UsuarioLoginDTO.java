@@ -1,9 +1,7 @@
 package com.JhonCodari.GestorFacil.dto;
 
-import com.JhonCodari.GestorFacil.model.EmailUsuario;
-import com.JhonCodari.GestorFacil.model.Senha;
-
 import jakarta.validation.Valid;
+import com.JhonCodari.GestorFacil.model.valueobjects.*;
 
 public record UsuarioLoginDTO(
     

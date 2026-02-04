@@ -1,7 +1,6 @@
 package com.JhonCodari.GestorFacil.dto;
 
-import com.JhonCodari.GestorFacil.model.NomeCompleto;
-import com.JhonCodari.GestorFacil.model.EmailUsuario;
+import com.JhonCodari.GestorFacil.model.valueobjects.*;
 
 public record UsuarioRespostaDTO (
     Long id,

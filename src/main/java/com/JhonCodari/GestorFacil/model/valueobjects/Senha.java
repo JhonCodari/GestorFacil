@@ -1,4 +1,4 @@
-package com.JhonCodari.GestorFacil.model;
+package com.JhonCodari.GestorFacil.model.valueobjects;
 
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;

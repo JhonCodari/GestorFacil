@@ -1,4 +1,4 @@
-package com.JhonCodari.GestorFacil.model;
+package com.JhonCodari.GestorFacil.model.valueobjects;
 
 import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.Email;

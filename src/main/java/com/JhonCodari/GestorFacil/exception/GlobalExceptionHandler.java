@@ -67,5 +67,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> tratarExcecaoGenerica(Exception ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ocorreu um erro inesperado.");
     }
-    
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> tratarIllegalArgumentException(IllegalArgumentException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
 }

@@ -1,12 +1,15 @@
 package com.JhonCodari.GestorFacil.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import com.JhonCodari.GestorFacil.dto.UsuarioLoginDTO;
+import com.JhonCodari.GestorFacil.model.valueobjects.Token;
 import com.JhonCodari.GestorFacil.service.AutenticacaoService;
 
 import jakarta.validation.Valid;
@@ -22,21 +25,26 @@ public class AutenticacaoController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody @Valid UsuarioLoginDTO usuarioLoginDTO) {
-        String token = autenticacaoService.autenticar(usuarioLoginDTO);
-        return ResponseEntity.ok(token);
+    public ResponseEntity<Void> login(@RequestBody @Valid UsuarioLoginDTO usuarioLoginDTO) {
+        Token token = new Token(autenticacaoService.autenticar(usuarioLoginDTO));
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .header("authorization", token.comPrefixoBearer())
+                .build();
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(@RequestHeader("Authorization") Token token) {
+        var response = autenticacaoService.invalidarToken(token);
+        return ResponseEntity.ok().body(response);
+    }
+
+
+    
     // @PostMapping("/refresh-token")// // Gera novo Access Token
     // public ResponseEntity<String> refreshToken(@RequestBody @Valid RefreshTokenDTO refreshTokenDTO) {
     //     return ResponseEntity.ok("Login realizado com sucesso!");
-    // }
-    
-    // @PostMapping("/logout")// // Gera novo Access Token
-    // public ResponseEntity<Void> logout() {
-    //     // lógica de logout (ex: invalidar token, remover sessão, etc.)
-    //     return ResponseEntity.ok().build();
-    // }
+    // }    
 
     // @PostMapping("/senha/recuperar") // Inicia fluxo de recuperação
     // public ResponseEntity<Void> solicitarRecuperacaoSenha(@RequestBody @Valid RecuperacaoSenhaDTO recuperacaoSenhaDTO) {
