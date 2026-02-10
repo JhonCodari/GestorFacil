@@ -9,8 +9,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
 import com.JhonCodari.GestorFacil.dto.UsuarioLoginDTO;
+import com.JhonCodari.GestorFacil.dto.RefreshTokenRequestDTO;
+import com.JhonCodari.GestorFacil.dto.TokenRespostaDTO;
 import com.JhonCodari.GestorFacil.model.valueobjects.Token;
 import com.JhonCodari.GestorFacil.service.AutenticacaoService;
+import com.JhonCodari.GestorFacil.service.AccessTokenService;
+import com.JhonCodari.GestorFacil.service.RefreshTokenService;
 
 import jakarta.validation.Valid;
 
@@ -19,44 +23,54 @@ import jakarta.validation.Valid;
 public class AutenticacaoController {    
 
     private final AutenticacaoService autenticacaoService;
+    private final AccessTokenService accessTokenService;
+    private final RefreshTokenService refreshTokenService;
 
-    public AutenticacaoController(AutenticacaoService autenticacaoService) {
+    public AutenticacaoController(
+            AutenticacaoService autenticacaoService,
+            AccessTokenService accessTokenService,
+            RefreshTokenService refreshTokenService) {
         this.autenticacaoService = autenticacaoService;
+        this.accessTokenService = accessTokenService;
+        this.refreshTokenService = refreshTokenService;
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Void> login(@RequestBody @Valid UsuarioLoginDTO usuarioLoginDTO) {
-        Token token = new Token(autenticacaoService.autenticar(usuarioLoginDTO));
-        return ResponseEntity
-                .status(HttpStatus.NO_CONTENT)
-                .header("authorization", token.comPrefixoBearer())
-                .build();
+    public ResponseEntity<TokenRespostaDTO> login(@RequestBody @Valid UsuarioLoginDTO usuarioLoginDTO) {
+        var accessToken = autenticacaoService.autenticar(usuarioLoginDTO);
+        var refreshToken = refreshTokenService.criar(usuarioLoginDTO.email());
+        
+        var response = new TokenRespostaDTO(accessToken, refreshToken.valor());
+        
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/logout")
     public ResponseEntity<String> logout(@RequestHeader("Authorization") Token token) {
         var response = autenticacaoService.invalidarToken(token);
-        return ResponseEntity.ok().body(response);
+        return ResponseEntity.ok(response);
+    }
+    
+    @PostMapping("/refresh-token")
+    public ResponseEntity<TokenRespostaDTO> refreshToken(@RequestBody @Valid RefreshTokenRequestDTO refreshTokenRequestDTO) {
+        var novoAccessToken = accessTokenService.renovar(refreshTokenRequestDTO.refreshToken());
+        
+        var response = new TokenRespostaDTO(
+            novoAccessToken.valor(),
+            refreshTokenRequestDTO.refreshToken().valor()
+        );
+        
+        return ResponseEntity.ok(response);
     }
 
-
-    
-    // @PostMapping("/refresh-token")// // Gera novo Access Token
-    // public ResponseEntity<String> refreshToken(@RequestBody @Valid RefreshTokenDTO refreshTokenDTO) {
-    //     return ResponseEntity.ok("Login realizado com sucesso!");
-    // }    
-
-    // @PostMapping("/senha/recuperar") // Inicia fluxo de recuperação
+    // @PostMapping("/senha/recuperar")
     // public ResponseEntity<Void> solicitarRecuperacaoSenha(@RequestBody @Valid RecuperacaoSenhaDTO recuperacaoSenhaDTO) {
-    //     //TODO: process POST request
-        
     //     return null;
     // }
 
-    // @PostMapping("/senha/alterar") // Finaliza recuperação com token
+    // @PostMapping("/senha/alterar")
     // public ResponseEntity<Void> alterarSenha(@RequestBody @Valid AlterarSenhaDTO alterarSenhaDTO) {
-    //     //TODO: process POST request
-        
     //     return null;
     // }
 }
+

@@ -30,6 +30,12 @@ public class UsuarioController {
     public ResponseEntity<UsuarioRespostaDTO> cadastro(@RequestBody @Valid UsuarioCadastroDTO usuarioCadastroDTO) {
         UsuarioRespostaDTO resposta = this.usuarioService.cadastrarUsuario(usuarioCadastroDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(resposta);
-    }   
+    } 
+    
+    @PostMapping("/consulta-email")
+    public ResponseEntity<UsuarioRespostaDTO> consultaEmail(@RequestBody @Valid UsuarioCadastroDTO usuarioCadastroDTO) {
+        UsuarioRespostaDTO resposta = this.usuarioService.consultarUsuarioPorEmail(usuarioCadastroDTO.email());
+        return ResponseEntity.status(HttpStatus.OK).body(resposta);
+    } 
     
 }

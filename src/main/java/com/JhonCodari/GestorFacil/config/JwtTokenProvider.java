@@ -15,51 +15,71 @@ import java.util.Date;
 public class JwtTokenProvider {
 
     private final Key chaveSecreta = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-    private final long tempoExpiracao = 900000;
+    private final long tempoExpiracaoAccessToken = 900_000;
+    private final long tempoExpiracaoRefreshToken = 7 * 24 * 60 * 60 * 1000;
 
-    public String gerarToken(EmailUsuario emailUsuario) {
-
-        Date agora = new Date();
-        Date dataExpiracao = new Date(agora.getTime() + tempoExpiracao);
-
-        return Jwts.builder()
-                .setSubject(emailUsuario.valor())
-                .setIssuedAt(agora)
-                .setExpiration(dataExpiracao)
-                .signWith(chaveSecreta)
-                .compact();       
+    public String gerarAccessToken(EmailUsuario emailUsuario) {
+        return gerarToken(emailUsuario.valor(), tempoExpiracaoAccessToken);              
     }
 
-    public String extrairEmail(Token token) {
+    public String gerarRefreshToken(EmailUsuario emailUsuario) {
+        return gerarToken(emailUsuario.valor(), tempoExpiracaoRefreshToken);              
+    }
+
+    public String gerarTokenPersonalizado(String subject, Date dataExpiracao) {
+        return gerarTokenComExpiracao(subject, dataExpiracao);
+    }
+
+    public String extrairSubject(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(chaveSecreta)
                 .build()
-                .parseClaimsJws(token.valor())
+                .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
     }
 
-    public boolean validarToken(Token token) {
+    public boolean validarToken(String token) {
         try {
             Jwts.parserBuilder()
                 .setSigningKey(chaveSecreta)
                 .build()
-                .parseClaimsJws(token.valor());
+                .parseClaimsJws(token);
             return true;
         } catch (Exception e) {
             return false;
         }
     }
 
-    public long getTempoExpiracao(Token token) {
+    public long getTempoExpiracao(String token) {
         Date dataExpiracao = Jwts.parserBuilder()
                 .setSigningKey(chaveSecreta)
                 .build()
-                .parseClaimsJws(token.valor())
+                .parseClaimsJws(token)
                 .getBody()
                 .getExpiration();
         Date agora = new Date();
         return dataExpiracao.getTime() - agora.getTime();
     }
+
+    public Key getChaveSecreta() {
+        return chaveSecreta;
+    }
+
+    private String gerarToken(String subject, long tempoExpiracao) {
+        var agora = new Date();
+        var dataExpiracao = new Date(agora.getTime() + tempoExpiracao);
+        return gerarTokenComExpiracao(subject, dataExpiracao);    
+    }    
+
+    private String gerarTokenComExpiracao(String subject, Date dataExpiracao) {
+        Date agora = new Date();
+        return Jwts.builder()
+                .setSubject(subject)
+                .setIssuedAt(agora)
+                .setExpiration(dataExpiracao)
+                .signWith(chaveSecreta)
+                .compact(); 
+    }  
     
 }
