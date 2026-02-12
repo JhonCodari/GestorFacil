@@ -15,7 +15,6 @@ import com.JhonCodari.GestorFacil.model.valueobjects.Token;
 import com.JhonCodari.GestorFacil.service.AutenticacaoService;
 import com.JhonCodari.GestorFacil.service.AccessTokenService;
 import com.JhonCodari.GestorFacil.service.RefreshTokenService;
-
 import jakarta.validation.Valid;
 
 @RestController

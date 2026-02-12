@@ -10,6 +10,7 @@ import com.JhonCodari.GestorFacil.model.valueobjects.*;
 
 import java.security.Key;
 import java.util.Date;
+import java.time.Instant;
 
 @Component
 public class JwtTokenProvider {
@@ -49,6 +50,29 @@ public class JwtTokenProvider {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    public Long getDataCriacao(String token) {
+        var claims = Jwts.parserBuilder()
+            .setSigningKey(chaveSecreta)
+            .build()
+            .parseClaimsJws(token)
+            .getBody();
+        return claims.getIssuedAt().getTime();
+    }
+
+    public Instant getDataCriacaoToInstant(String token) {
+        var claims = Jwts.parserBuilder()
+            .setSigningKey(chaveSecreta)
+            .build()
+            .parseClaimsJws(token)
+            .getBody();
+        return claims.getIssuedAt().toInstant();
+    }
+
+    public Instant getDataExpiracao(String token) {
+        return getDataCriacaoToInstant(token)
+        .plusMillis(getTempoExpiracao(token));       
     }
 
     public long getTempoExpiracao(String token) {

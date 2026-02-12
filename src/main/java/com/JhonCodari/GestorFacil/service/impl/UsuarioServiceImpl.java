@@ -39,16 +39,10 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
-    public UsuarioRespostaDTO consultarUsuarioPorEmail (EmailUsuario email) {
+    public Usuario consultarUsuarioPorEmail (EmailUsuario email) {
         if (!this.usuarioRepository.existsByEmailValor(email.valor())) 
             throw new EmailJaCadastradoException("Usuário não encontrado.");
-
-        var usuario = this.usuarioRepository.findByEmailValor(email.valor());
-        return new UsuarioRespostaDTO(
-            usuario.getId(),
-            usuario.getNomeCompleto(),
-            usuario.getEmail()
-        );
+        return this.usuarioRepository.findByEmailValor(email.valor());        
     }
     
 }

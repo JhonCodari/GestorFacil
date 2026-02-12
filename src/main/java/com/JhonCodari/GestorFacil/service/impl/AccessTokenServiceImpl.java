@@ -34,10 +34,8 @@ public class AccessTokenServiceImpl implements AccessTokenService {
 
     @Override
     public AccessToken criar(EmailUsuario usuarioEmail) {
-        usuarioService.consultarUsuarioPorEmail(usuarioEmail);
-        
-        var tokenJwt = jwtTokenProvider.gerarAccessToken(usuarioEmail);
-        
+        usuarioService.consultarUsuarioPorEmail(usuarioEmail);        
+        var tokenJwt = jwtTokenProvider.gerarAccessToken(usuarioEmail);        
         return new AccessToken(tokenJwt);
     }
 

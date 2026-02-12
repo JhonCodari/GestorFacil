@@ -5,12 +5,15 @@ import org.springframework.web.bind.annotation.RestController;
 import com.JhonCodari.GestorFacil.dto.UsuarioCadastroDTO;
 import com.JhonCodari.GestorFacil.dto.UsuarioLoginDTO;
 import com.JhonCodari.GestorFacil.dto.UsuarioRespostaDTO;
+import com.JhonCodari.GestorFacil.mapper.UsuarioMapper;
+import com.JhonCodari.GestorFacil.model.valueobjects.EmailUsuario;
 
 import jakarta.validation.Valid;
 import com.JhonCodari.GestorFacil.service.UsuarioService;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,14 +31,16 @@ public class UsuarioController {
     
     @PostMapping("/cadastro")
     public ResponseEntity<UsuarioRespostaDTO> cadastro(@RequestBody @Valid UsuarioCadastroDTO usuarioCadastroDTO) {
-        UsuarioRespostaDTO resposta = this.usuarioService.cadastrarUsuario(usuarioCadastroDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(resposta);
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+            this.usuarioService.cadastrarUsuario(usuarioCadastroDTO)
+        );
     } 
     
-    @PostMapping("/consulta-email")
-    public ResponseEntity<UsuarioRespostaDTO> consultaEmail(@RequestBody @Valid UsuarioCadastroDTO usuarioCadastroDTO) {
-        UsuarioRespostaDTO resposta = this.usuarioService.consultarUsuarioPorEmail(usuarioCadastroDTO.email());
-        return ResponseEntity.status(HttpStatus.OK).body(resposta);
-    } 
-    
+    @PostMapping("/por-email")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Object> consultaEmail(@RequestBody @Valid EmailUsuario email) {
+        return ResponseEntity.status(HttpStatus.OK).body(
+            UsuarioMapper.toDTO(this.usuarioService.consultarUsuarioPorEmail(email))
+        );
+    }     
 }
