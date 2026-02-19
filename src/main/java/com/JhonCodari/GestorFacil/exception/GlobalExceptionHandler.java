@@ -63,6 +63,31 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body("Serviço de e-mail indisponível: " + ex.getMessage());
     }
 
+    @ExceptionHandler(RefreshTokenExpiradoException.class)
+    public ResponseEntity<String> tratarRefreshTokenExpiradoException(RefreshTokenExpiradoException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Refresh token expirado: " + ex.getMessage());
+    }
+
+    @ExceptionHandler(RefreshTokenRevogadoException.class)
+    public ResponseEntity<String> tratarRefreshTokenRevogadoException(RefreshTokenRevogadoException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Refresh token revogado: " + ex.getMessage());
+    }
+
+    @ExceptionHandler(RefreshTokenNaoEncontradoException.class)
+    public ResponseEntity<String> tratarRefreshTokenNaoEncontradoException(RefreshTokenNaoEncontradoException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Refresh token não encontrado: " + ex.getMessage());
+    }
+
+    @ExceptionHandler(TokenNaBlacklistException.class)
+    public ResponseEntity<String> tratarTokenNaBlacklistException(TokenNaBlacklistException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token inválido: " + ex.getMessage());
+    }
+
+    @ExceptionHandler(EmailNaoVerificadoException.class)
+    public ResponseEntity<String> tratarEmailNaoVerificadoException(EmailNaoVerificadoException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Email não verificado: " + ex.getMessage());
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> tratarExcecaoGenerica(Exception ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ocorreu um erro inesperado.");

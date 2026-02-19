@@ -1,11 +1,16 @@
 package com.JhonCodari.GestorFacil.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.AttributeOverrides;
 import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import com.JhonCodari.GestorFacil.model.valueobjects.*;
@@ -41,12 +46,19 @@ public class Usuario {
     @Column(name = "senha_hash", nullable = false, length = 100)
     private String senhaHash;
 
+    @Column(name = "email_verificado", nullable = false)
+    private boolean emailVerificado;
+
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RefreshTokenEntity> refreshTokens = new ArrayList<>();
+
     protected Usuario() {}
 
     public Usuario(NomeCompleto nomeCompleto, EmailUsuario email, Senha senha) {
         this.nomeCompleto = nomeCompleto;
         this.email = email;
         this.senhaHash = senha.hash();
+        this.emailVerificado = false;
     }
 
     public Long getId() {
@@ -67,6 +79,18 @@ public class Usuario {
     
     public String getSenhaHash() {
         return senhaHash;
+    }
+
+    public boolean isEmailVerificado() {
+        return emailVerificado;
+    }
+
+    public void marcarEmailComoVerificado() {
+        this.emailVerificado = true;
+    }
+
+    public void atualizarSenha(Senha novaSenha) {
+        this.senhaHash = novaSenha.hash();
     }
     
 }

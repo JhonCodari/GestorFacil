@@ -5,16 +5,22 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.JhonCodari.GestorFacil.dto.UsuarioLoginDTO;
-import com.JhonCodari.GestorFacil.dto.RefreshTokenRequestDTO;
 import com.JhonCodari.GestorFacil.dto.TokenRespostaDTO;
+import com.JhonCodari.GestorFacil.dto.RecuperacaoSenhaRequestDTO;
+import com.JhonCodari.GestorFacil.dto.RedefinirSenhaRequestDTO;
 import com.JhonCodari.GestorFacil.model.valueobjects.Token;
+import com.JhonCodari.GestorFacil.model.valueobjects.RefreshToken;
 import com.JhonCodari.GestorFacil.service.AutenticacaoService;
 import com.JhonCodari.GestorFacil.service.AccessTokenService;
 import com.JhonCodari.GestorFacil.service.RefreshTokenService;
+import com.JhonCodari.GestorFacil.service.ConfirmacaoEmailService;
+import com.JhonCodari.GestorFacil.service.RecuperacaoSenhaService;
 import jakarta.validation.Valid;
 
 @RestController
@@ -24,14 +30,20 @@ public class AutenticacaoController {
     private final AutenticacaoService autenticacaoService;
     private final AccessTokenService accessTokenService;
     private final RefreshTokenService refreshTokenService;
+    private final ConfirmacaoEmailService confirmacaoEmailService;
+    private final RecuperacaoSenhaService recuperacaoSenhaService;
 
     public AutenticacaoController(
             AutenticacaoService autenticacaoService,
             AccessTokenService accessTokenService,
-            RefreshTokenService refreshTokenService) {
+            RefreshTokenService refreshTokenService,
+            ConfirmacaoEmailService confirmacaoEmailService,
+            RecuperacaoSenhaService recuperacaoSenhaService) {
         this.autenticacaoService = autenticacaoService;
         this.accessTokenService = accessTokenService;
         this.refreshTokenService = refreshTokenService;
+        this.confirmacaoEmailService = confirmacaoEmailService;
+        this.recuperacaoSenhaService = recuperacaoSenhaService;
     }
 
     @PostMapping("/login")
@@ -51,25 +63,38 @@ public class AutenticacaoController {
     }
     
     @PostMapping("/refresh-token")
-    public ResponseEntity<TokenRespostaDTO> refreshToken(@RequestBody @Valid RefreshTokenRequestDTO refreshTokenRequestDTO) {
-        var novoAccessToken = accessTokenService.renovar(refreshTokenRequestDTO.refreshToken());
+    public ResponseEntity<TokenRespostaDTO> refreshToken(@RequestHeader("X-Refresh-Token") String refreshTokenValor) {
+        var refreshToken = new RefreshToken(refreshTokenValor);
+        
+        var novoRefreshToken = refreshTokenService.rotacionar(refreshToken);
+        var novoAccessToken = accessTokenService.renovar(novoRefreshToken);
         
         var response = new TokenRespostaDTO(
             novoAccessToken.valor(),
-            refreshTokenRequestDTO.refreshToken().valor()
+            novoRefreshToken.valor()
         );
         
         return ResponseEntity.ok(response);
     }
 
-    // @PostMapping("/senha/recuperar")
-    // public ResponseEntity<Void> solicitarRecuperacaoSenha(@RequestBody @Valid RecuperacaoSenhaDTO recuperacaoSenhaDTO) {
-    //     return null;
-    // }
+    @GetMapping("/confirma-email")
+    public ResponseEntity<String> confirmarEmail(@RequestParam String token) {
+        confirmacaoEmailService.confirmarEmail(token);
+        return ResponseEntity.ok("Email confirmado com sucesso!");
+    }
 
-    // @PostMapping("/senha/alterar")
-    // public ResponseEntity<Void> alterarSenha(@RequestBody @Valid AlterarSenhaDTO alterarSenhaDTO) {
-    //     return null;
-    // }
+    @PostMapping("/senha/esqueci")
+    public ResponseEntity<String> solicitarRecuperacaoSenha(@RequestBody @Valid RecuperacaoSenhaRequestDTO request) {
+        recuperacaoSenhaService.solicitarRecuperacao(request.email());
+        return ResponseEntity.ok("Email de recuperação enviado com sucesso!");
+    }
+
+    @PostMapping("/senha/reset")
+    public ResponseEntity<String> redefinirSenha(
+            @RequestParam String token,
+            @RequestBody @Valid RedefinirSenhaRequestDTO request) {
+        recuperacaoSenhaService.redefinirSenha(token, request.novaSenha());
+        return ResponseEntity.ok("Senha redefinida com sucesso!");
+    }
 }
 

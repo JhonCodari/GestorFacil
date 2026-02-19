@@ -1,0 +1,91 @@
+package com.JhonCodari.GestorFacil.model;
+
+import java.time.Instant;
+
+import com.JhonCodari.GestorFacil.model.valueobjects.TokenConfirmacaoEmail;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "tokens_confirmacao_email")
+public class TokenConfirmacaoEmailEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "token_valor", nullable = false, unique = true)
+    private TokenConfirmacaoEmail token;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "usuario_id", nullable = false)
+    private Usuario usuario;
+
+    @Column(name = "criado_em", nullable = false, updatable = false)
+    private Instant criadoEm;
+
+    @Column(name = "data_expiracao", nullable = false)
+    private Instant dataExpiracao;
+
+    @Column(name = "utilizado", nullable = false)
+    private boolean utilizado;
+
+    public TokenConfirmacaoEmailEntity() {}
+
+    public TokenConfirmacaoEmailEntity(
+        TokenConfirmacaoEmail token,
+        Usuario usuario,
+        Instant dataExpiracao
+    ) {
+        this.token = token;
+        this.usuario = usuario;
+        this.dataExpiracao = dataExpiracao;
+        this.utilizado = false;
+    }
+
+    @PrePersist
+    private void onCreate() {
+        this.criadoEm = this.criadoEm == null ? Instant.now() : criadoEm;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public TokenConfirmacaoEmail getToken() {
+        return token;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public Instant getCriadoEm() {
+        return criadoEm;
+    }
+
+    public Instant getDataExpiracao() {
+        return dataExpiracao;
+    }
+
+    public boolean isUtilizado() {
+        return utilizado;
+    }
+
+    public void marcarComoUtilizado() {
+        this.utilizado = true;
+    }
+
+    public boolean isExpirado() {
+        return Instant.now().isAfter(dataExpiracao);
+    }
+}
