@@ -3,9 +3,13 @@ package com.JhonCodari.GestorFacil.service.impl;
 import java.time.Instant;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.JhonCodari.GestorFacil.config.JwtTokenProvider;
 import com.JhonCodari.GestorFacil.dto.RefreshTokenRequestDTO;
+import com.JhonCodari.GestorFacil.exception.RefreshTokenExpiradoException;
+import com.JhonCodari.GestorFacil.exception.RefreshTokenNaoEncontradoException;
+import com.JhonCodari.GestorFacil.exception.RefreshTokenRevogadoException;
 import com.JhonCodari.GestorFacil.model.RefreshTokenEntity;
 import com.JhonCodari.GestorFacil.model.valueobjects.EmailUsuario;
 import com.JhonCodari.GestorFacil.model.valueobjects.RefreshToken;
@@ -27,6 +31,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     }
 
     @Override
+    @Transactional
     public RefreshToken criar(EmailUsuario usuarioEmail) {
         var usuario = usuarioService.consultarUsuarioPorEmail(usuarioEmail);
 
@@ -46,9 +51,13 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
     @Override
     public boolean validar(RefreshToken refreshToken) {
-        if (!jwtTokenProvider.validarToken(refreshToken.valor())) {
-            return false;
-        }
+        if (!jwtTokenProvider.validarToken(refreshToken.valor())) return false;
+        
+        var entidade = refreshTokenRepository.findByRefreshToken_valor(refreshToken.valor());
+        
+        if (entidade == null) throw new RefreshTokenNaoEncontradoException("Refresh token não encontrado no banco de dados");
+        
+        if (entidade.isRevogado()) throw new RefreshTokenRevogadoException("Refresh token foi revogado");
         
         var emailExtraido = jwtTokenProvider.extrairSubject(refreshToken.valor());
         var emailUsuario = new EmailUsuario(emailExtraido);
@@ -59,18 +68,48 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     }
 
     @Override
-    public void rotacionar(RefreshTokenRequestDTO refreshTokenRequestDTO) {
-        validar(refreshTokenRequestDTO.refreshToken());
+    @Transactional
+    public RefreshToken rotacionar(RefreshToken refreshToken) {
+        validar(refreshToken);
         
-        var emailExtraido = jwtTokenProvider.extrairSubject(refreshTokenRequestDTO.refreshToken().valor());
+        var entidadeAntiga = refreshTokenRepository.findByRefreshToken_valor(
+            refreshToken.valor()
+        );
+        
+        if (entidadeAntiga == null) throw new RefreshTokenNaoEncontradoException("Refresh token não encontrado");
+        
+        
+        entidadeAntiga.revogar();
+        refreshTokenRepository.save(entidadeAntiga);
+        
+        var emailExtraido = jwtTokenProvider.extrairSubject(refreshToken.valor());
         var emailUsuario = new EmailUsuario(emailExtraido);
         
-        criar(emailUsuario);
+        return criar(emailUsuario);
     }
 
     @Override
+    @Transactional
     public void revogar(RefreshToken refreshToken) {
-        validar(refreshToken);
+        var entidade = refreshTokenRepository.findByRefreshToken_valor(refreshToken.valor());
+        
+        if (entidade == null) throw new RefreshTokenNaoEncontradoException("Refresh token não encontrado");     
+        
+        entidade.revogar();
+        refreshTokenRepository.save(entidade);
+    }
+
+    @Override
+    @Transactional
+    public void revogarTodosRefreshTokensDoUsuario(String email) {
+        var tokens = refreshTokenRepository.findAllByUsuario_Email_Valor(email);
+        
+        tokens.forEach(token -> {
+            if (!token.isRevogado()) {
+                token.revogar();
+                refreshTokenRepository.save(token);
+            }
+        });
     }
     
 }
