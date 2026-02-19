@@ -3,7 +3,6 @@ package com.JhonCodari.GestorFacil.controller;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.JhonCodari.GestorFacil.dto.UsuarioCadastroDTO;
-import com.JhonCodari.GestorFacil.dto.UsuarioLoginDTO;
 import com.JhonCodari.GestorFacil.dto.UsuarioRespostaDTO;
 import com.JhonCodari.GestorFacil.mapper.UsuarioMapper;
 import com.JhonCodari.GestorFacil.model.valueobjects.EmailUsuario;
@@ -11,11 +10,14 @@ import com.JhonCodari.GestorFacil.model.valueobjects.EmailUsuario;
 import jakarta.validation.Valid;
 import com.JhonCodari.GestorFacil.service.UsuarioService;
 
+import java.security.Principal;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 
@@ -36,10 +38,11 @@ public class UsuarioController {
         );
     } 
     
-    @PostMapping("/por-email")
+    @GetMapping("/perfil")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<Object> consultaEmail(@RequestBody @Valid EmailUsuario email) {
-        return ResponseEntity.status(HttpStatus.OK).body(
+    public ResponseEntity<UsuarioRespostaDTO> meuPerfil(Principal principal) {
+        var email = new EmailUsuario(principal.getName());
+        return ResponseEntity.ok(
             UsuarioMapper.toDTO(this.usuarioService.consultarUsuarioPorEmail(email))
         );
     }     
