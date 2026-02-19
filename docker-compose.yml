@@ -3,14 +3,14 @@ services:
     image: postgres:16
     container_name: gestorfacil_db
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U admindb -d gestorfacil_db"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 10s
       timeout: 5s
       retries: 5
     environment:
       POSTGRES_DB: gestorfacil_db
-      POSTGRES_USER: admindb
-      POSTGRES_PASSWORD: admindb123
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - "5432:5432"
     volumes:
