@@ -1,13 +1,14 @@
 package com.JhonCodari.GestorFacil.config;
 
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.JhonCodari.GestorFacil.model.valueobjects.*;
 
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 import java.time.Instant;
@@ -15,9 +16,18 @@ import java.time.Instant;
 @Component
 public class JwtTokenProvider {
 
-    private final Key chaveSecreta = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-    private final long tempoExpiracaoAccessToken = 900_000;
-    private final long tempoExpiracaoRefreshToken = 7 * 24 * 60 * 60 * 1000;
+    private final Key chaveSecreta;
+    private final long tempoExpiracaoAccessToken;
+    private final long tempoExpiracaoRefreshToken;
+    
+    public JwtTokenProvider(
+            @Value("${jwt.secret}") String secret,
+            @Value("${jwt.access-token.expiration}") long accessTokenExpiration,
+            @Value("${jwt.refresh-token.expiration}") long refreshTokenExpiration) {
+        this.chaveSecreta = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+        this.tempoExpiracaoAccessToken = accessTokenExpiration;
+        this.tempoExpiracaoRefreshToken = refreshTokenExpiration;
+    }
 
     public String gerarAccessToken(EmailUsuario emailUsuario) {
         return gerarToken(emailUsuario.valor(), tempoExpiracaoAccessToken);              
