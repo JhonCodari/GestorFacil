@@ -8,7 +8,7 @@ services:
       timeout: 5s
       retries: 5
     environment:
-      POSTGRES_DB: gestorfacil_db
+      POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
@@ -39,7 +39,7 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: docker
       SPRING_SECURITY_USER_NAME: ${SPRING_SECURITY_USER_NAME}
-      SPRING_SECURITY_USER_PASSWORD: ${SPRING_SECURITY_USER_PASSWORD}
+      SPRING_SECURITY_USER_PASSWORD: ${SPRING_SECURITY_PASSWORD}
       JWT_SECRET: ${JWT_SECRET}
 
 volumes:
