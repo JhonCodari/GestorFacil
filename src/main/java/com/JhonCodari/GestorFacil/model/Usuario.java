@@ -3,19 +3,7 @@ package com.JhonCodari.GestorFacil.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.persistence.AttributeOverrides;
-import jakarta.persistence.AttributeOverride;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
-import com.JhonCodari.GestorFacil.model.valueobjects.*;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
+import jakarta.persistence.*;
 
 @Entity
 @Table(
@@ -52,6 +40,9 @@ public class Usuario {
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RefreshTokenEntity> refreshTokens = new ArrayList<>();
 
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Transacao> transacoes = new ArrayList<>();
+
     protected Usuario() {}
 
     public Usuario(NomeCompleto nomeCompleto, EmailUsuario email, Senha senha) {
@@ -79,6 +70,10 @@ public class Usuario {
     
     public String getSenhaHash() {
         return senhaHash;
+    }
+
+    public List<Transacao> getTransacoes() {
+        return transacoes;
     }
 
     public boolean isEmailVerificado() {
