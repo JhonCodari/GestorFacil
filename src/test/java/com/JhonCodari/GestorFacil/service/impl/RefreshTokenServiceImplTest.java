@@ -4,7 +4,7 @@ import com.JhonCodari.GestorFacil.config.JwtTokenProvider;
 import com.JhonCodari.GestorFacil.exception.RefreshTokenNaoEncontradoException;
 import com.JhonCodari.GestorFacil.exception.RefreshTokenRevogadoException;
 import com.JhonCodari.GestorFacil.model.RefreshTokenEntity;
-import com.JhonCodari.GestorFacil.model.Usuario;
+import com.JhonCodari.GestorFacil.model.UsuarioEntity;
 import com.JhonCodari.GestorFacil.model.valueobjects.*;
 import com.JhonCodari.GestorFacil.repository.RefreshTokenRepository;
 import com.JhonCodari.GestorFacil.service.UsuarioService;
@@ -38,14 +38,14 @@ class RefreshTokenServiceImplTest {
     @InjectMocks
     private RefreshTokenServiceImpl refreshTokenService;
 
-    private Usuario usuario;
+    private UsuarioEntity usuario;
     private RefreshToken refreshToken;
     private RefreshTokenEntity entidadeAtiva;
     private final String tokenValor = "header.payload.signature";
 
     @BeforeEach
     void configurar() {
-        usuario = new Usuario(
+        usuario = new UsuarioEntity(
             new NomeCompleto("Joao", "Silva"),
             new EmailUsuario("joao@email.com"),
             new Senha("Senha@123")

@@ -2,7 +2,7 @@ package com.JhonCodari.GestorFacil.model;
 
 import java.time.Instant;
 
-import com.JhonCodari.GestorFacil.model.valueobjects.TokenConfirmacaoEmail;
+import com.JhonCodari.GestorFacil.model.valueobjects.Token;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -24,11 +24,11 @@ public class TokenConfirmacaoEmailEntity {
     private Long id;
 
     @Column(name = "token_valor", nullable = false, unique = true)
-    private TokenConfirmacaoEmail token;
+    private Token token;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "usuario_id", nullable = false)
-    private Usuario usuario;
+    private UsuarioEntity usuario;
 
     @Column(name = "criado_em", nullable = false, updatable = false)
     private Instant criadoEm;
@@ -42,8 +42,8 @@ public class TokenConfirmacaoEmailEntity {
     public TokenConfirmacaoEmailEntity() {}
 
     public TokenConfirmacaoEmailEntity(
-        TokenConfirmacaoEmail token,
-        Usuario usuario,
+        Token token,
+        UsuarioEntity usuario,
         Instant dataExpiracao
     ) {
         this.token = token;
@@ -61,11 +61,11 @@ public class TokenConfirmacaoEmailEntity {
         return id;
     }
 
-    public TokenConfirmacaoEmail getToken() {
+    public Token getToken() {
         return token;
     }
 
-    public Usuario getUsuario() {
+    public UsuarioEntity getUsuario() {
         return usuario;
     }
 

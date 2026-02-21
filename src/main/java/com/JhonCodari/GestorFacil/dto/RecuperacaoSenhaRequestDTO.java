@@ -1,10 +1,11 @@
 package com.JhonCodari.GestorFacil.dto;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
+import com.JhonCodari.GestorFacil.model.valueobjects.EmailUsuario;
 
 public record RecuperacaoSenhaRequestDTO(
-    @NotBlank(message = "Email não pode ser vazio")
-    @Email(message = "Email inválido")
-    String email
-) {}
+    EmailUsuario email
+) {
+    public String getEmailUsuario() {
+        return email.valor();
+    }
+}

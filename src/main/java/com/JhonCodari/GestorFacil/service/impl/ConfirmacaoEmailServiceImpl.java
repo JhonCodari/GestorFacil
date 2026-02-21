@@ -7,8 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.JhonCodari.GestorFacil.exception.ConfirmacaoEmailException;
 import com.JhonCodari.GestorFacil.model.TokenConfirmacaoEmailEntity;
-import com.JhonCodari.GestorFacil.model.Usuario;
-import com.JhonCodari.GestorFacil.model.valueobjects.TokenConfirmacaoEmail;
+import com.JhonCodari.GestorFacil.model.UsuarioEntity;
+import com.JhonCodari.GestorFacil.model.valueobjects.Token;
 import com.JhonCodari.GestorFacil.repository.TokenConfirmacaoEmailRepository;
 import com.JhonCodari.GestorFacil.repository.UsuarioRepository;
 import com.JhonCodari.GestorFacil.service.ConfirmacaoEmailService;
@@ -32,8 +32,8 @@ public class ConfirmacaoEmailServiceImpl implements ConfirmacaoEmailService {
 
     @Override
     @Transactional
-    public void gerarTokenConfirmacao(Usuario usuario) {
-        var token = TokenConfirmacaoEmail.gerar();
+    public void gerarTokenConfirmacao(UsuarioEntity usuario) {
+        var token = Token.gerarUUID();
         var dataExpiracao = Instant.now().plusSeconds(24 * 60 * 60);
         
         var tokenEntity = new TokenConfirmacaoEmailEntity(token, usuario, dataExpiracao);

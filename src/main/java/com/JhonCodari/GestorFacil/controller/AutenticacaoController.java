@@ -85,7 +85,7 @@ public class AutenticacaoController {
 
     @PostMapping("/senha/esqueci")
     public ResponseEntity<String> solicitarRecuperacaoSenha(@RequestBody @Valid RecuperacaoSenhaRequestDTO request) {
-        recuperacaoSenhaService.solicitarRecuperacao(request.email());
+        recuperacaoSenhaService.solicitarRecuperacao(request.getEmailUsuario());
         return ResponseEntity.ok("Email de recuperação enviado com sucesso!");
     }
 

@@ -4,7 +4,7 @@ import com.JhonCodari.GestorFacil.config.JwtTokenProvider;
 import com.JhonCodari.GestorFacil.dto.UsuarioLoginDTO;
 import com.JhonCodari.GestorFacil.exception.CredenciaisInvalidasException;
 import com.JhonCodari.GestorFacil.exception.EmailNaoVerificadoException;
-import com.JhonCodari.GestorFacil.model.Usuario;
+import com.JhonCodari.GestorFacil.model.UsuarioEntity;
 import com.JhonCodari.GestorFacil.model.valueobjects.*;
 import com.JhonCodari.GestorFacil.repository.UsuarioRepository;
 import com.JhonCodari.GestorFacil.service.AccessTokenService;
@@ -37,7 +37,7 @@ class AutenticacaoServiceImplTest {
     @InjectMocks
     private AutenticacaoServiceImpl autenticacaoService;
 
-    private Usuario usuarioVerificado;
+    private UsuarioEntity usuarioVerificado;
     private UsuarioLoginDTO loginDTO;
     private final String senhaValor = "Senha@123";
 
@@ -46,7 +46,7 @@ class AutenticacaoServiceImplTest {
         var nomeCompleto = new NomeCompleto("Joao", "Silva");
         var email = new EmailUsuario("joao@email.com");
         var senha = new Senha(senhaValor);
-        usuarioVerificado = new Usuario(nomeCompleto, email, senha);
+        usuarioVerificado = new UsuarioEntity(nomeCompleto, email, senha);
         usuarioVerificado.marcarEmailComoVerificado();
 
         loginDTO = new UsuarioLoginDTO(email, senha);
@@ -69,7 +69,7 @@ class AutenticacaoServiceImplTest {
         var nomeCompleto = new NomeCompleto("Joao", "Silva");
         var email = new EmailUsuario("joao@email.com");
         var senha = new Senha(senhaValor);
-        var usuarioNaoVerificado = new Usuario(nomeCompleto, email, senha);
+        var usuarioNaoVerificado = new UsuarioEntity(nomeCompleto, email, senha);
 
         when(usuarioRepository.findByEmailValor("joao@email.com")).thenReturn(usuarioNaoVerificado);
 
@@ -83,7 +83,7 @@ class AutenticacaoServiceImplTest {
         var nomeCompleto = new NomeCompleto("Joao", "Silva");
         var email = new EmailUsuario("joao@email.com");
         var senhaCorreta = new Senha("SenhaCorreta@1");
-        var usuarioComSenhaCorreta = new Usuario(nomeCompleto, email, senhaCorreta);
+        var usuarioComSenhaCorreta = new UsuarioEntity(nomeCompleto, email, senhaCorreta);
         usuarioComSenhaCorreta.marcarEmailComoVerificado();
 
         when(usuarioRepository.findByEmailValor("joao@email.com")).thenReturn(usuarioComSenhaCorreta);

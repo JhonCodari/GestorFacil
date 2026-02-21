@@ -3,7 +3,13 @@ package com.JhonCodari.GestorFacil.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.JhonCodari.GestorFacil.model.valueobjects.EmailUsuario;
+import com.JhonCodari.GestorFacil.model.valueobjects.NomeCompleto;
+import com.JhonCodari.GestorFacil.model.valueobjects.Senha;
+
 import jakarta.persistence.*;
+
+
 
 @Entity
 @Table(
@@ -12,7 +18,7 @@ import jakarta.persistence.*;
         @UniqueConstraint( name = "uk_usuario_email_valor", columnNames = "email_valor")
     }
 )
-public class Usuario {
+public class UsuarioEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,11 +47,11 @@ public class Usuario {
     private List<RefreshTokenEntity> refreshTokens = new ArrayList<>();
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Transacao> transacoes = new ArrayList<>();
+    private List<TransacaoEntity> transacoes = new ArrayList<>();
 
-    protected Usuario() {}
+    protected UsuarioEntity() {}
 
-    public Usuario(NomeCompleto nomeCompleto, EmailUsuario email, Senha senha) {
+    public UsuarioEntity(NomeCompleto nomeCompleto, EmailUsuario email, Senha senha) {
         this.nomeCompleto = nomeCompleto;
         this.email = email;
         this.senhaHash = senha.hash();
@@ -72,7 +78,7 @@ public class Usuario {
         return senhaHash;
     }
 
-    public List<Transacao> getTransacoes() {
+    public List<TransacaoEntity> getTransacoes() {
         return transacoes;
     }
 

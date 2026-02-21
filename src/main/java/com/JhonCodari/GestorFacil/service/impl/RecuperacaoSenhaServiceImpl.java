@@ -9,7 +9,7 @@ import com.JhonCodari.GestorFacil.exception.ConfirmacaoEmailException;
 import com.JhonCodari.GestorFacil.model.TokenRecuperacaoSenhaEntity;
 import com.JhonCodari.GestorFacil.model.valueobjects.EmailUsuario;
 import com.JhonCodari.GestorFacil.model.valueobjects.Senha;
-import com.JhonCodari.GestorFacil.model.valueobjects.TokenRecuperacaoSenha;
+import com.JhonCodari.GestorFacil.model.valueobjects.Token;
 import com.JhonCodari.GestorFacil.repository.TokenRecuperacaoSenhaRepository;
 import com.JhonCodari.GestorFacil.repository.UsuarioRepository;
 import com.JhonCodari.GestorFacil.service.EmailService;
@@ -41,7 +41,7 @@ public class RecuperacaoSenhaServiceImpl implements RecuperacaoSenhaService {
         var emailUsuario = new EmailUsuario(email);
         var usuario = usuarioService.consultarUsuarioPorEmail(emailUsuario);
         
-        var token = TokenRecuperacaoSenha.gerar();
+        var token = Token.gerarUUID();
         var dataExpiracao = Instant.now().plusSeconds(60 * 60);
         
         var tokenEntity = new TokenRecuperacaoSenhaEntity(token, usuario, dataExpiracao);

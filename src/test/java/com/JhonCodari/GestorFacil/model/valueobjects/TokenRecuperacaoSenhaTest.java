@@ -13,22 +13,22 @@ class TokenRecuperacaoSenhaTest {
 
     @Test
     void deveGerarTokenComFormatoUUID() {
-        var token = TokenRecuperacaoSenha.gerar();
+        var token = Token.gerarUUID();
         assertNotNull(token);
         assertTrue(UUID_PATTERN.matcher(token.valor()).matches());
     }
 
     @Test
     void deveGerarTokensUnicos() {
-        var token1 = TokenRecuperacaoSenha.gerar();
-        var token2 = TokenRecuperacaoSenha.gerar();
+        var token1 = Token.gerarUUID();
+        var token2 = Token.gerarUUID();
         assertNotEquals(token1.valor(), token2.valor());
     }
 
     @Test
     void deveCriarTokenComValorExplicito() {
         var uuid = "550e8400-e29b-41d4-a716-446655440001";
-        var token = new TokenRecuperacaoSenha(uuid);
+        var token = new Token(uuid);
         assertEquals(uuid, token.valor());
     }
 }

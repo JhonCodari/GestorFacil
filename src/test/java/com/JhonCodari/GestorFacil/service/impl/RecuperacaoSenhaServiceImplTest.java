@@ -2,7 +2,7 @@ package com.JhonCodari.GestorFacil.service.impl;
 
 import com.JhonCodari.GestorFacil.exception.ConfirmacaoEmailException;
 import com.JhonCodari.GestorFacil.model.TokenRecuperacaoSenhaEntity;
-import com.JhonCodari.GestorFacil.model.Usuario;
+import com.JhonCodari.GestorFacil.model.UsuarioEntity;
 import com.JhonCodari.GestorFacil.model.valueobjects.*;
 import com.JhonCodari.GestorFacil.repository.TokenRecuperacaoSenhaRepository;
 import com.JhonCodari.GestorFacil.repository.UsuarioRepository;
@@ -39,12 +39,12 @@ class RecuperacaoSenhaServiceImplTest {
     @InjectMocks
     private RecuperacaoSenhaServiceImpl recuperacaoSenhaService;
 
-    private Usuario usuario;
+    private UsuarioEntity usuario;
     private final String uuidToken = "550e8400-e29b-41d4-a716-446655440002";
 
     @BeforeEach
     void configurar() {
-        usuario = new Usuario(
+        usuario = new UsuarioEntity(
             new NomeCompleto("Joao", "Silva"),
             new EmailUsuario("joao@email.com"),
             new Senha("Senha@123")
@@ -64,7 +64,7 @@ class RecuperacaoSenhaServiceImplTest {
     @Test
     void deveRedefinirSenhaComTokenValido() {
         var tokenEntity = new TokenRecuperacaoSenhaEntity(
-            new TokenRecuperacaoSenha(uuidToken),
+            new Token(uuidToken),
             usuario,
             Instant.now().plusSeconds(3600)
         );
@@ -90,7 +90,7 @@ class RecuperacaoSenhaServiceImplTest {
     @Test
     void deveLancarExcecaoQuandoTokenJaUtilizado() {
         var tokenEntity = new TokenRecuperacaoSenhaEntity(
-            new TokenRecuperacaoSenha(uuidToken),
+            new Token(uuidToken),
             usuario,
             Instant.now().plusSeconds(3600)
         );
@@ -105,7 +105,7 @@ class RecuperacaoSenhaServiceImplTest {
     @Test
     void deveLancarExcecaoQuandoTokenExpirado() {
         var tokenEntity = new TokenRecuperacaoSenhaEntity(
-            new TokenRecuperacaoSenha(uuidToken),
+            new Token(uuidToken),
             usuario,
             Instant.now().minusSeconds(1)
         );

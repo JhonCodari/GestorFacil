@@ -28,7 +28,7 @@ public class RefreshTokenEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional =  false)
     @JoinColumn(name = "usuario_id", nullable = false)
-    private Usuario usuario;
+    private UsuarioEntity usuario;
 
     @Column(name = "criado_em", nullable = false, updatable = false)
     private Instant criadoEm;
@@ -43,7 +43,7 @@ public class RefreshTokenEntity {
 
     public RefreshTokenEntity(
         RefreshToken refreshToken,
-        Usuario usuario,
+        UsuarioEntity usuario,
         Instant expiracao
     ) {
         this.refreshToken = refreshToken;
@@ -65,7 +65,7 @@ public class RefreshTokenEntity {
         return refreshToken;
     }
 
-    public Usuario getUsuario() {
+    public UsuarioEntity getUsuario() {
         return usuario;
     }
 

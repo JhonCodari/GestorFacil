@@ -16,7 +16,7 @@ import jakarta.persistence.*;
         @UniqueConstraint(name = "uk_transacao_id", columnNames = "id")
     }
 )
-public class Transacao {
+public class TransacaoEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,7 +39,7 @@ public class Transacao {
     
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "usuario_id", nullable = false)
-    private Usuario usuario;
+    private UsuarioEntity usuario;
     
     @Column(name = "criado_em", nullable = false, updatable = false)
     private Instant criadoEm;
@@ -47,15 +47,15 @@ public class Transacao {
     @Column(name = "atualizado_em", nullable = false)
     private Instant atualizadoEm;
 
-    public Transacao() {}
+    public TransacaoEntity() {}
 
-    public Transacao(
+    public TransacaoEntity(
         String descricao,
         BigDecimal valor,
         TipoTransacao tipo,
         CategoriaTransacao categoria,
         LocalDate data,
-        Usuario usuario
+        UsuarioEntity usuario
     ) {
         this.descricao = descricao;
         this.valor = valor;
@@ -89,7 +89,7 @@ public class Transacao {
         return data;
     }
 
-    public Usuario getUsuario() {
+    public UsuarioEntity getUsuario() {
         return usuario;
     }
 

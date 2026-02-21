@@ -6,10 +6,11 @@ import org.springframework.transaction.annotation.Transactional;
 import com.JhonCodari.GestorFacil.dto.UsuarioCadastroDTO;
 import com.JhonCodari.GestorFacil.dto.UsuarioRespostaDTO;
 import com.JhonCodari.GestorFacil.exception.EmailJaCadastradoException;
+import com.JhonCodari.GestorFacil.exception.EmailNaoVerificadoException;
 import com.JhonCodari.GestorFacil.service.ConfirmacaoEmailService;
 import com.JhonCodari.GestorFacil.service.UsuarioService;
 import com.JhonCodari.GestorFacil.repository.UsuarioRepository;
-import com.JhonCodari.GestorFacil.model.Usuario;
+import com.JhonCodari.GestorFacil.model.UsuarioEntity;
 import com.JhonCodari.GestorFacil.model.valueobjects.EmailUsuario;
 
 @Service
@@ -32,7 +33,7 @@ public class UsuarioServiceImpl implements UsuarioService {
         if (this.usuarioRepository.existsByEmailValor(usuarioCadastroDTO.emailValor())) 
             throw new EmailJaCadastradoException("Este E-mail já está em uso.");
 
-        var usuario = new Usuario(
+        var usuario = new UsuarioEntity(
             usuarioCadastroDTO.nomeCompleto(),
             usuarioCadastroDTO.email(),
             usuarioCadastroDTO.senha()
@@ -49,9 +50,9 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
-    public Usuario consultarUsuarioPorEmail (EmailUsuario email) {
+    public UsuarioEntity consultarUsuarioPorEmail (EmailUsuario email) {
         if (!this.usuarioRepository.existsByEmailValor(email.valor())) 
-            throw new EmailJaCadastradoException("Usuário não encontrado.");
+            throw new EmailNaoVerificadoException("Usuário não encontrado.");
         return this.usuarioRepository.findByEmailValor(email.valor());        
     }
     

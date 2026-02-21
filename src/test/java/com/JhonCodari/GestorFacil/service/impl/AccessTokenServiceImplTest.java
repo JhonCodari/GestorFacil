@@ -4,7 +4,7 @@ import com.JhonCodari.GestorFacil.config.JwtTokenProvider;
 import com.JhonCodari.GestorFacil.model.valueobjects.*;
 import com.JhonCodari.GestorFacil.service.RefreshTokenService;
 import com.JhonCodari.GestorFacil.service.UsuarioService;
-import com.JhonCodari.GestorFacil.model.Usuario;
+import com.JhonCodari.GestorFacil.model.UsuarioEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,11 +40,11 @@ class AccessTokenServiceImplTest {
     private AccessTokenServiceImpl accessTokenService;
 
     private final String tokenValor = "header.payload.signature";
-    private Usuario usuario;
+    private UsuarioEntity usuario;
 
     @BeforeEach
     void configurar() {
-        usuario = new Usuario(
+        usuario = new UsuarioEntity(
             new NomeCompleto("Joao", "Silva"),
             new EmailUsuario("joao@email.com"),
             new Senha("Senha@123")

@@ -1,20 +1,20 @@
 package com.JhonCodari.GestorFacil.model.converters;
 
-import com.JhonCodari.GestorFacil.model.valueobjects.TokenRecuperacaoSenha;
+import com.JhonCodari.GestorFacil.model.valueobjects.Token;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 
 @Converter(autoApply = true)
-public class TokenRecuperacaoSenhaConverter implements AttributeConverter<TokenRecuperacaoSenha, String> {
+public class TokenRecuperacaoSenhaConverter implements AttributeConverter<Token, String> {
 
     @Override
-    public String convertToDatabaseColumn(TokenRecuperacaoSenha token) {
+    public String convertToDatabaseColumn(Token token) {
         return token != null ? token.valor() : null;
     }
 
     @Override
-    public TokenRecuperacaoSenha convertToEntityAttribute(String dbData) {
-        return dbData != null ? new TokenRecuperacaoSenha(dbData) : null;
+    public Token convertToEntityAttribute(String dbData) {
+        return dbData != null ? new Token(dbData) : null;
     }
 }

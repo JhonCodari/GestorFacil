@@ -1,8 +1,8 @@
 package com.JhonCodari.GestorFacil.service;
 
-import com.JhonCodari.GestorFacil.model.Usuario;
+import com.JhonCodari.GestorFacil.model.UsuarioEntity;
 
 public interface ConfirmacaoEmailService {
-    void gerarTokenConfirmacao(Usuario usuario);
+    void gerarTokenConfirmacao(UsuarioEntity usuario);
     void confirmarEmail(String tokenValor);
 }

@@ -2,7 +2,7 @@ package com.JhonCodari.GestorFacil.service.impl;
 
 import com.JhonCodari.GestorFacil.dto.UsuarioCadastroDTO;
 import com.JhonCodari.GestorFacil.exception.EmailJaCadastradoException;
-import com.JhonCodari.GestorFacil.model.Usuario;
+import com.JhonCodari.GestorFacil.model.UsuarioEntity;
 import com.JhonCodari.GestorFacil.model.valueobjects.EmailUsuario;
 import com.JhonCodari.GestorFacil.model.valueobjects.NomeCompleto;
 import com.JhonCodari.GestorFacil.model.valueobjects.Senha;
@@ -32,7 +32,7 @@ class UsuarioServiceImplTest {
     private UsuarioServiceImpl usuarioService;
 
     private UsuarioCadastroDTO dadosCadastro;
-    private Usuario usuarioSalvo;
+    private UsuarioEntity usuarioSalvo;
 
     @BeforeEach
     void configurar() {
@@ -40,19 +40,19 @@ class UsuarioServiceImplTest {
         var email = new EmailUsuario("joao@email.com");
         var senha = new Senha("Senha@123");
         dadosCadastro = new UsuarioCadastroDTO(nomeCompleto, email, senha);
-        usuarioSalvo = new Usuario(nomeCompleto, email, senha);
+        usuarioSalvo = new UsuarioEntity(nomeCompleto, email, senha);
     }
 
     @Test
     void deveCadastrarUsuarioComSucesso() {
         when(usuarioRepository.existsByEmailValor("joao@email.com")).thenReturn(false);
-        when(usuarioRepository.save(any(Usuario.class))).thenReturn(usuarioSalvo);
+        when(usuarioRepository.save(any(UsuarioEntity.class))).thenReturn(usuarioSalvo);
 
         var resultado = usuarioService.cadastrarUsuario(dadosCadastro);
 
         assertNotNull(resultado);
         assertEquals("joao@email.com", resultado.email().valor());
-        verify(confirmacaoEmailService, times(1)).gerarTokenConfirmacao(any(Usuario.class));
+        verify(confirmacaoEmailService, times(1)).gerarTokenConfirmacao(any(UsuarioEntity.class));
     }
 
     @Test
