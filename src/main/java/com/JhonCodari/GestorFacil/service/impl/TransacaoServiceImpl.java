@@ -1,5 +1,7 @@
 package com.JhonCodari.GestorFacil.service.impl;
 
+import java.math.RoundingMode;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -36,7 +38,7 @@ public class TransacaoServiceImpl implements TransacaoService {
 
         var transacao = new TransacaoEntity(
             dto.descricao(),
-            dto.valor(),
+            dto.valor().setScale(2, RoundingMode.HALF_UP),
             dto.tipo(),
             dto.categoria(),
             dto.data(),
@@ -69,7 +71,7 @@ public class TransacaoServiceImpl implements TransacaoService {
         verificarPropriedade(transacao, emailUsuario);
 
         if (dto.descricao() != null) transacao.setDescricao(dto.descricao());
-        if (dto.valor() != null) transacao.setValor(dto.valor());
+        if (dto.valor() != null) transacao.setValor(dto.valor().setScale(2, RoundingMode.HALF_UP));
         if (dto.tipo() != null) transacao.setTipo(dto.tipo());
         if (dto.categoria() != null) transacao.setCategoria(dto.categoria());
         if (dto.data() != null) transacao.setData(dto.data());
