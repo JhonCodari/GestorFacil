@@ -1,13 +1,10 @@
 package com.JhonCodari.GestorFacil.service.impl;
 
-import java.time.Instant;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.JhonCodari.GestorFacil.config.JwtTokenProvider;
-import com.JhonCodari.GestorFacil.dto.RefreshTokenRequestDTO;
-import com.JhonCodari.GestorFacil.exception.RefreshTokenExpiradoException;
 import com.JhonCodari.GestorFacil.exception.RefreshTokenNaoEncontradoException;
 import com.JhonCodari.GestorFacil.exception.RefreshTokenRevogadoException;
 import com.JhonCodari.GestorFacil.model.RefreshTokenEntity;

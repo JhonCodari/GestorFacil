@@ -1,7 +1,5 @@
 package com.JhonCodari.GestorFacil.controller;
 
-import com.JhonCodari.GestorFacil.config.JwtAuthenticationFilter;
-import com.JhonCodari.GestorFacil.config.JwtTokenProvider;
 import com.JhonCodari.GestorFacil.dto.UsuarioRespostaDTO;
 import com.JhonCodari.GestorFacil.model.UsuarioEntity;
 import com.JhonCodari.GestorFacil.model.valueobjects.*;
@@ -12,13 +10,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.security.autoconfigure.SecurityAutoConfiguration;
-import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 

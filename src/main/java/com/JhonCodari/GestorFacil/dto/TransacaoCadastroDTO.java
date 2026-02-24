@@ -6,9 +6,7 @@ import java.time.LocalDate;
 import com.JhonCodari.GestorFacil.model.enums.CategoriaTransacao;
 import com.JhonCodari.GestorFacil.model.enums.TipoTransacao;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.*;
 
 public record TransacaoCadastroDTO(
     @NotBlank String descricao,

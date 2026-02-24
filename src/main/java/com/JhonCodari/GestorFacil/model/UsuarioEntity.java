@@ -3,10 +3,7 @@ package com.JhonCodari.GestorFacil.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.JhonCodari.GestorFacil.model.valueobjects.EmailUsuario;
-import com.JhonCodari.GestorFacil.model.valueobjects.NomeCompleto;
-import com.JhonCodari.GestorFacil.model.valueobjects.Senha;
-
+import com.JhonCodari.GestorFacil.model.valueobjects.*;
 import jakarta.persistence.*;
 
 

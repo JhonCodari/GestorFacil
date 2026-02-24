@@ -1,26 +1,12 @@
 package com.JhonCodari.GestorFacil.controller;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
-import com.JhonCodari.GestorFacil.dto.UsuarioLoginDTO;
-import com.JhonCodari.GestorFacil.dto.TokenRespostaDTO;
-import com.JhonCodari.GestorFacil.dto.RecuperacaoSenhaRequestDTO;
-import com.JhonCodari.GestorFacil.dto.RedefinirSenhaRequestDTO;
+import com.JhonCodari.GestorFacil.dto.*;
 import com.JhonCodari.GestorFacil.model.valueobjects.Token;
 import com.JhonCodari.GestorFacil.model.valueobjects.RefreshToken;
-import com.JhonCodari.GestorFacil.service.AutenticacaoService;
-import com.JhonCodari.GestorFacil.service.AccessTokenService;
-import com.JhonCodari.GestorFacil.service.RefreshTokenService;
-import com.JhonCodari.GestorFacil.service.ConfirmacaoEmailService;
-import com.JhonCodari.GestorFacil.service.RecuperacaoSenhaService;
+import com.JhonCodari.GestorFacil.service.*;
 import jakarta.validation.Valid;
 
 @RestController
