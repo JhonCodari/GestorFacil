@@ -20,7 +20,7 @@ public class TransacaoEntity {
     @Column(name = "descricao", length = 255)
     private String descricao;
 
-    @Column(name = "valor", nullable = false, precision = 19, scale = 4)
+    @Column(name = "valor", nullable = false, precision = 19, scale = 2)
     private BigDecimal valor;
 
     @Enumerated(EnumType.STRING)
