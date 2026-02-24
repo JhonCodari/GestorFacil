@@ -108,7 +108,7 @@ class AutenticacaoControllerTest {
         doNothing().when(recuperacaoSenhaService).solicitarRecuperacao(anyString());
 
         var payload = """
-            {"email": "joao@email.com"}
+            {"email": {"valor": "joao@email.com"}}
             """;
 
         mockMvc.perform(post("/auth/senha/esqueci")

@@ -2,6 +2,7 @@ package com.JhonCodari.GestorFacil.service.impl;
 
 import com.JhonCodari.GestorFacil.dto.UsuarioCadastroDTO;
 import com.JhonCodari.GestorFacil.exception.EmailJaCadastradoException;
+import com.JhonCodari.GestorFacil.exception.EmailNaoVerificadoException;
 import com.JhonCodari.GestorFacil.model.UsuarioEntity;
 import com.JhonCodari.GestorFacil.model.valueobjects.EmailUsuario;
 import com.JhonCodari.GestorFacil.model.valueobjects.NomeCompleto;
@@ -82,7 +83,7 @@ class UsuarioServiceImplTest {
     void deveLancarExcecaoQuandoEmailNaoEncontrado() {
         when(usuarioRepository.existsByEmailValor("inexistente@email.com")).thenReturn(false);
 
-        assertThrows(EmailJaCadastradoException.class, () ->
+        assertThrows(EmailNaoVerificadoException.class, () ->
             usuarioService.consultarUsuarioPorEmail(new EmailUsuario("inexistente@email.com"))
         );
     }
