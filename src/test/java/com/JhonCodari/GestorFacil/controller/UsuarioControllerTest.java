@@ -73,7 +73,7 @@ class UsuarioControllerTest {
 
         when(usuarioService.consultarUsuarioPorEmail(any())).thenReturn(usuario);
 
-        mockMvc.perform(get("/usuario/perfil").principal(principal))
+        mockMvc.perform(get("/usuario").principal(principal))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.email.valor").value("joao@email.com"));
     }
@@ -126,7 +126,7 @@ class UsuarioControllerTest {
 
 //         when(usuarioService.consultarUsuarioPorEmail(any())).thenReturn(usuario);
 
-//         mockMvc.perform(get("/usuario/perfil").principal(principal))
+//         mockMvc.perform(get("/usuario").principal(principal))
 //             .andExpect(status().isOk())
 //             .andExpect(jsonPath("$.email.valor").value("joao@email.com"));
 //     }
@@ -186,7 +186,7 @@ class UsuarioControllerTest {
 
 //         when(usuarioService.consultarUsuarioPorEmail(any())).thenReturn(usuario);
 
-//         mockMvc.perform(get("/usuario/perfil"))
+//         mockMvc.perform(get("/usuario").principal(principal))
 //             .andExpect(status().isOk())
 //             .andExpect(jsonPath("$.email.valor").value("joao@email.com"));
 //     }
@@ -194,7 +194,7 @@ class UsuarioControllerTest {
 
     // @Test
     // void deveRetornar401AoAcessarPerfilSemAutenticacao() throws Exception {
-    //     mockMvc.perform(get("/usuario/perfil"))
+    //     mockMvc.perform(get("/usuario"))
     //         .andExpect(status().isUnauthorized());
     // }
 
