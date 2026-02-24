@@ -88,6 +88,16 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Email não verificado: " + ex.getMessage());
     }
 
+    @ExceptionHandler(TransacaoNaoEncontradaException.class)
+    public ResponseEntity<String> tratarTransacaoNaoEncontradaException(TransacaoNaoEncontradaException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(TransacaoNaoPertenceAoUsuarioException.class)
+    public ResponseEntity<String> tratarTransacaoNaoPertenceAoUsuarioException(TransacaoNaoPertenceAoUsuarioException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> tratarExcecaoGenerica(Exception ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ocorreu um erro inesperado.");
