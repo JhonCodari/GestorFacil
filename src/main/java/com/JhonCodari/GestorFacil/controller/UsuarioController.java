@@ -1,7 +1,5 @@
 package com.JhonCodari.GestorFacil.controller;
 
-import org.springframework.web.bind.annotation.RestController;
-
 import com.JhonCodari.GestorFacil.dto.UsuarioCadastroDTO;
 import com.JhonCodari.GestorFacil.dto.UsuarioRespostaDTO;
 import com.JhonCodari.GestorFacil.mapper.UsuarioMapper;
@@ -27,20 +25,20 @@ public class UsuarioController {
     public UsuarioController(UsuarioService usuarioService) {
         this.usuarioService = usuarioService;
     }
+
+    @GetMapping
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<UsuarioRespostaDTO> consultar(Principal principal) {
+        var email = new EmailUsuario(principal.getName());
+        return ResponseEntity.ok(
+            UsuarioMapper.toDTO(this.usuarioService.consultarUsuarioPorEmail(email))
+        );
+    } 
     
     @PostMapping("/cadastro")
     public ResponseEntity<UsuarioRespostaDTO> cadastro(@RequestBody @Valid UsuarioCadastroDTO usuarioCadastroDTO) {
         return ResponseEntity.status(HttpStatus.CREATED).body(
             this.usuarioService.cadastrarUsuario(usuarioCadastroDTO)
-        );
-    } 
-    
-    @GetMapping("/perfil")
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<UsuarioRespostaDTO> meuPerfil(Principal principal) {
-        var email = new EmailUsuario(principal.getName());
-        return ResponseEntity.ok(
-            UsuarioMapper.toDTO(this.usuarioService.consultarUsuarioPorEmail(email))
         );
     }     
 }
