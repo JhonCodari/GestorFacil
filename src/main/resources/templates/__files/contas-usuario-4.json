@@ -1,0 +1,19 @@
+[
+  {
+    "id": "5",
+    "usuarioId": "4",
+    "numeroConta": "7778901-3",
+    "agencia": "0002-7",
+    "banco": "Caixa Economica Federal",
+    "codigoBanco": "104",
+    "tipoConta": "SALARIO",
+    "saldoDisponivel": 3500.00,
+    "saldoBloqueado": 0.00,
+    "saldoTotal": 3500.00,
+    "limiteChequeEspecial": 200.00,
+    "moeda": "BRL",
+    "dataAbertura": "2018-06-05",
+    "ativa": true,
+    "atualizadoEm": "2026-02-23T18:45:00Z"
+  }
+]

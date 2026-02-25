@@ -1,0 +1,17 @@
+{
+  "priority": 3,
+  "request": {
+    "method": "GET",
+    "urlPath": "/v1/contas-bancarias",
+    "queryParameters": {
+      "usuarioId": { "matches": "[0-9]+" }
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": "[]"
+  }
+}

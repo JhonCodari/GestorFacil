@@ -1,0 +1,17 @@
+{
+  "priority": 1,
+  "request": {
+    "method": "GET",
+    "urlPath": "/v1/contas-bancarias",
+    "queryParameters": {
+      "usuarioId": { "equalTo": "6" }
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "bodyFileName": "contas-usuario-6.json"
+  }
+}

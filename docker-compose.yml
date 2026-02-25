@@ -42,6 +42,16 @@ services:
       SPRING_SECURITY_USER_PASSWORD: ${SPRING_SECURITY_PASSWORD}
       JWT_SECRET: ${JWT_SECRET}
 
+  wiremock:
+    image: wiremock/wiremock:3.10.0
+    container_name: banco-conta_wiremock
+    ports:
+      - "8090:8080"
+    volumes:
+      - ./src/main/resources/templates/mappings:/home/wiremock/mappings
+      - ./src/main/resources/templates/__files:/home/wiremock/__files
+    command: --global-response-templating --verbose
+
 volumes:
   postgres_data:
 

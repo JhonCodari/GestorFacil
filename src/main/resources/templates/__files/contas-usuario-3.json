@@ -1,0 +1,19 @@
+[
+  {
+    "id": "4",
+    "usuarioId": "3",
+    "numeroConta": "3334567-9",
+    "agencia": "0478-1",
+    "banco": "Nubank",
+    "codigoBanco": "260",
+    "tipoConta": "CORRENTE",
+    "saldoDisponivel": 22300.00,
+    "saldoBloqueado": 300.00,
+    "saldoTotal": 22600.00,
+    "limiteChequeEspecial": 0.00,
+    "moeda": "BRL",
+    "dataAbertura": "2022-01-10",
+    "ativa": true,
+    "atualizadoEm": "2026-02-24T11:00:00Z"
+  }
+]

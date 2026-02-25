@@ -1,0 +1,19 @@
+[
+  {
+    "id": "7",
+    "usuarioId": "6",
+    "numeroConta": "4445678-6",
+    "agencia": "5432-1",
+    "banco": "Santander",
+    "codigoBanco": "033",
+    "tipoConta": "INVESTIMENTO",
+    "saldoDisponivel": 85000.00,
+    "saldoBloqueado": 5000.00,
+    "saldoTotal": 90000.00,
+    "limiteChequeEspecial": 0.00,
+    "moeda": "BRL",
+    "dataAbertura": "2015-04-30",
+    "ativa": true,
+    "atualizadoEm": "2026-02-24T12:00:00Z"
+  }
+]

@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "PUT",
+    "urlPathPattern": "/v1/contas-bancarias/[a-zA-Z0-9]+"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": "{\"id\": \"{{request.pathSegments.[2]}}\", \"usuarioId\": \"{{jsonPath request.body '$.usuarioId'}}\", \"numeroConta\": \"{{jsonPath request.body '$.numeroConta'}}\", \"agencia\": \"{{jsonPath request.body '$.agencia'}}\", \"banco\": \"{{jsonPath request.body '$.banco'}}\", \"codigoBanco\": \"{{jsonPath request.body '$.codigoBanco'}}\", \"tipoConta\": \"{{jsonPath request.body '$.tipoConta'}}\", \"saldoDisponivel\": {{jsonPath request.body '$.saldoDisponivel'}}, \"saldoBloqueado\": {{jsonPath request.body '$.saldoBloqueado'}}, \"saldoTotal\": {{jsonPath request.body '$.saldoTotal'}}, \"limiteChequeEspecial\": {{jsonPath request.body '$.limiteChequeEspecial'}}, \"moeda\": \"BRL\", \"dataAbertura\": \"{{jsonPath request.body '$.dataAbertura'}}\", \"ativa\": {{jsonPath request.body '$.ativa'}}, \"atualizadoEm\": \"{{now}}\"}"
+  }
+}

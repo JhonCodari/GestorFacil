@@ -1,0 +1,9 @@
+{
+  "request": {
+    "method": "DELETE",
+    "urlPathPattern": "/v1/contas-bancarias/[a-zA-Z0-9]+"
+  },
+  "response": {
+    "status": 204
+  }
+}

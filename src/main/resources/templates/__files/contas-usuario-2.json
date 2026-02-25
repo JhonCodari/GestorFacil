@@ -1,0 +1,19 @@
+[
+  {
+    "id": "3",
+    "usuarioId": "2",
+    "numeroConta": "5551234-0",
+    "agencia": "1234-5",
+    "banco": "Itau",
+    "codigoBanco": "341",
+    "tipoConta": "CORRENTE",
+    "saldoDisponivel": 780.50,
+    "saldoBloqueado": 0.00,
+    "saldoTotal": 780.50,
+    "limiteChequeEspecial": 500.00,
+    "moeda": "BRL",
+    "dataAbertura": "2021-11-22",
+    "ativa": true,
+    "atualizadoEm": "2026-02-24T09:15:00Z"
+  }
+]

@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "/v1/contas-bancarias"
+  },
+  "response": {
+    "status": 201,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": "{\"id\": \"{{randomValue type='UUID'}}\", \"usuarioId\": \"{{jsonPath request.body '$.usuarioId'}}\", \"numeroConta\": \"{{jsonPath request.body '$.numeroConta'}}\", \"agencia\": \"{{jsonPath request.body '$.agencia'}}\", \"banco\": \"{{jsonPath request.body '$.banco'}}\", \"codigoBanco\": \"{{jsonPath request.body '$.codigoBanco'}}\", \"tipoConta\": \"{{jsonPath request.body '$.tipoConta'}}\", \"saldoDisponivel\": {{jsonPath request.body '$.saldoDisponivel'}}, \"saldoBloqueado\": 0.00, \"saldoTotal\": {{jsonPath request.body '$.saldoDisponivel'}}, \"limiteChequeEspecial\": {{jsonPath request.body '$.limiteChequeEspecial'}}, \"moeda\": \"BRL\", \"dataAbertura\": \"{{now format='yyyy-MM-dd'}}\", \"ativa\": true, \"atualizadoEm\": \"{{now}}\"}"
+  }
+}

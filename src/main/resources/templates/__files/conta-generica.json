@@ -1,0 +1,17 @@
+{
+  "id": "1",
+  "usuarioId": "1",
+  "numeroConta": "1234567-8",
+  "agencia": "0001-4",
+  "banco": "Banco do Brasil",
+  "codigoBanco": "001",
+  "tipoConta": "CORRENTE",
+  "saldoDisponivel": 4250.75,
+  "saldoBloqueado": 150.00,
+  "saldoTotal": 4400.75,
+  "limiteChequeEspecial": 1000.00,
+  "moeda": "BRL",
+  "dataAbertura": "2019-03-15",
+  "ativa": true,
+  "atualizadoEm": "2026-02-24T10:30:00Z"
+}

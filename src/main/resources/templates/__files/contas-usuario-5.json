@@ -1,0 +1,19 @@
+[
+  {
+    "id": "6",
+    "usuarioId": "5",
+    "numeroConta": "2223456-1",
+    "agencia": "0887-9",
+    "banco": "Bradesco",
+    "codigoBanco": "237",
+    "tipoConta": "CORRENTE",
+    "saldoDisponivel": -250.00,
+    "saldoBloqueado": 0.00,
+    "saldoTotal": -250.00,
+    "limiteChequeEspecial": 1500.00,
+    "moeda": "BRL",
+    "dataAbertura": "2017-09-20",
+    "ativa": true,
+    "atualizadoEm": "2026-02-24T07:30:00Z"
+  }
+]
