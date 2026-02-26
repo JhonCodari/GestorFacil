@@ -11,6 +11,8 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.validation.FieldError;
+import com.JhonCodari.GestorFacil.exception.ContaBancariaNaoVinculadaException;
+import com.JhonCodari.GestorFacil.exception.ContaBancariaIntegracaoException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -96,6 +98,16 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(TransacaoNaoPertenceAoUsuarioException.class)
     public ResponseEntity<String> tratarTransacaoNaoPertenceAoUsuarioException(TransacaoNaoPertenceAoUsuarioException ex) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(ContaBancariaNaoVinculadaException.class)
+    public ResponseEntity<String> tratarContaBancariaNaoVinculadaException(ContaBancariaNaoVinculadaException ex) {
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(ContaBancariaIntegracaoException.class)
+    public ResponseEntity<String> tratarContaBancariaIntegracaoException(ContaBancariaIntegracaoException ex) {
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(ex.getMessage());
     }
 
     @ExceptionHandler(Exception.class)
