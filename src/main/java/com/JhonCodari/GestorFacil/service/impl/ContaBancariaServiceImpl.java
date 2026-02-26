@@ -13,6 +13,7 @@ import com.JhonCodari.GestorFacil.model.UsuarioEntity;
 import com.JhonCodari.GestorFacil.model.valueobjects.EmailUsuario;
 import com.JhonCodari.GestorFacil.repository.UsuarioRepository;
 import com.JhonCodari.GestorFacil.service.ContaBancariaService;
+import com.JhonCodari.GestorFacil.integration.ContaBancariaClient;
 
 @Service
 public class ContaBancariaServiceImpl implements ContaBancariaService {

@@ -1,4 +1,4 @@
-package com.JhonCodari.GestorFacil.service.impl;
+package com.JhonCodari.GestorFacil.integration;
 
 import java.util.List;
 
