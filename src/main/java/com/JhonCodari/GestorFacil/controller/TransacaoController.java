@@ -62,4 +62,24 @@ public class TransacaoController {
         transacaoService.deletar(id, principal.getName());
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/convertidas")
+    public ResponseEntity<Page<TransacaoConvertidaRespostaDTO>> listarConvertidas(
+            @RequestParam String moeda,
+            Pageable pageable,
+            Principal principal) {
+        return ResponseEntity.ok(
+            transacaoService.listarConvertidas(principal.getName(), moeda, pageable)
+        );
+    }
+
+    @GetMapping("/{id}/convertida")
+    public ResponseEntity<TransacaoConvertidaRespostaDTO> buscarPorIdConvertida(
+            @PathVariable Long id,
+            @RequestParam String moeda,
+            Principal principal) {
+        return ResponseEntity.ok(
+            transacaoService.buscarPorIdConvertida(id, principal.getName(), moeda)
+        );
+    }
 }

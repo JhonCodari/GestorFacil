@@ -9,3 +9,4 @@ public interface ContaBancariaService {
     void desvincular(EmailUsuario emailUsuario);
     ContaBancariaRespostaDTO consultarSaldo(EmailUsuario emailUsuario);
 }
+

@@ -1,5 +1,6 @@
 package com.JhonCodari.GestorFacil.service.impl;
 
+import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 import org.springframework.data.domain.Page;
@@ -9,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.JhonCodari.GestorFacil.dto.TransacaoAtualizacaoDTO;
 import com.JhonCodari.GestorFacil.dto.TransacaoCadastroDTO;
+import com.JhonCodari.GestorFacil.dto.TransacaoConvertidaRespostaDTO;
 import com.JhonCodari.GestorFacil.dto.TransacaoRespostaDTO;
 import com.JhonCodari.GestorFacil.exception.TransacaoNaoEncontradaException;
 import com.JhonCodari.GestorFacil.exception.TransacaoNaoPertenceAoUsuarioException;
@@ -17,6 +19,7 @@ import com.JhonCodari.GestorFacil.model.TransacaoEntity;
 import com.JhonCodari.GestorFacil.model.UsuarioEntity;
 import com.JhonCodari.GestorFacil.model.valueobjects.EmailUsuario;
 import com.JhonCodari.GestorFacil.repository.TransacaoRepository;
+import com.JhonCodari.GestorFacil.service.CambioConversorService;
 import com.JhonCodari.GestorFacil.service.TransacaoService;
 import com.JhonCodari.GestorFacil.service.UsuarioService;
 
@@ -25,10 +28,15 @@ public class TransacaoServiceImpl implements TransacaoService {
 
     private final TransacaoRepository transacaoRepository;
     private final UsuarioService usuarioService;
+    private final CambioConversorService cambioConversorService;
 
-    public TransacaoServiceImpl(TransacaoRepository transacaoRepository, UsuarioService usuarioService) {
+    public TransacaoServiceImpl(
+            TransacaoRepository transacaoRepository,
+            UsuarioService usuarioService,
+            CambioConversorService cambioConversorService) {
         this.transacaoRepository = transacaoRepository;
         this.usuarioService = usuarioService;
+        this.cambioConversorService = cambioConversorService;
     }
 
     @Override
@@ -98,5 +106,38 @@ public class TransacaoServiceImpl implements TransacaoService {
             throw new TransacaoNaoPertenceAoUsuarioException(
                 "Transacao nao pertence ao usuario autenticado.");
         }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<TransacaoConvertidaRespostaDTO> listarConvertidas(String emailUsuario, String moeda, Pageable pageable) {
+        UsuarioEntity usuario = usuarioService.consultarUsuarioPorEmail(new EmailUsuario(emailUsuario));
+        BigDecimal taxa = cambioConversorService.buscarTaxaFechamentoPTAX(moeda);
+        return transacaoRepository.findAllByUsuarioId(usuario.getId(), pageable)
+            .map(t -> toConvertidaDTO(t, moeda, taxa));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public TransacaoConvertidaRespostaDTO buscarPorIdConvertida(Long id, String emailUsuario, String moeda) {
+        TransacaoEntity transacao = buscarTransacaoOuFalhar(id);
+        verificarPropriedade(transacao, emailUsuario);
+        BigDecimal taxa = cambioConversorService.buscarTaxaFechamentoPTAX(moeda);
+        return toConvertidaDTO(transacao, moeda, taxa);
+    }
+
+    private TransacaoConvertidaRespostaDTO toConvertidaDTO(TransacaoEntity transacao, String moeda, BigDecimal taxa) {
+        return new TransacaoConvertidaRespostaDTO(
+            transacao.getId(),
+            transacao.getDescricao(),
+            transacao.getValor(),
+            cambioConversorService.converter(transacao.getValor(), taxa),
+            moeda.toUpperCase(),
+            transacao.getTipo(),
+            transacao.getCategoria(),
+            transacao.getData(),
+            transacao.getCriadoEm(),
+            transacao.getAtualizadoEm()
+        );
     }
 }

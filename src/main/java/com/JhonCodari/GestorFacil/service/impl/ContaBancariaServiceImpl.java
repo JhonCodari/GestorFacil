@@ -1,5 +1,7 @@
 package com.JhonCodari.GestorFacil.service.impl;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -14,6 +16,10 @@ import com.JhonCodari.GestorFacil.model.valueobjects.EmailUsuario;
 import com.JhonCodari.GestorFacil.repository.UsuarioRepository;
 import com.JhonCodari.GestorFacil.service.ContaBancariaService;
 import com.JhonCodari.GestorFacil.integration.ContaBancariaClient;
+
+//remover depois de testar
+import com.JhonCodari.GestorFacil.integration.CambioClient;
+import com.JhonCodari.GestorFacil.dto.CambioRespostaDTO;
 
 @Service
 public class ContaBancariaServiceImpl implements ContaBancariaService {
@@ -68,6 +74,17 @@ public class ContaBancariaServiceImpl implements ContaBancariaService {
         }
         return toRespostaDTO(contas.get(0));
     }
+
+    // // metodo provisorio pra testes, 
+    // // assim que terminar a integracao com o brasilapi, esse metodo deve ser removido 
+    // // e a consulta de cambio deve ser feita diretamente no controller
+
+    // @Override
+    // @Transactional(readOnly = true)
+    // public CambioRespostaDTO consultarCambio(String moeda) {
+    //     String dataOntem = LocalDate.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+    //     return cambioClient.consultaCambio(moeda, dataOntem);
+    // }
 
     private UsuarioEntity buscarUsuario(EmailUsuario emailUsuario) {
         UsuarioEntity usuario = usuarioRepository.findByEmailValor(emailUsuario.valor());

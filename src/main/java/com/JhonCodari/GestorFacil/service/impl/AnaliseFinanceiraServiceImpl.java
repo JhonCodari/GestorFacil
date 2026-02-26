@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.JhonCodari.GestorFacil.dto.AnaliseCategoriaDTO;
+import com.JhonCodari.GestorFacil.dto.AnaliseFinanceiraConvertidaRespostaDTO;
 import com.JhonCodari.GestorFacil.dto.AnaliseFinanceiraRespostaDTO;
 import com.JhonCodari.GestorFacil.exception.ContaBancariaNaoVinculadaException;
 import com.JhonCodari.GestorFacil.model.TransacaoEntity;
@@ -20,6 +21,7 @@ import com.JhonCodari.GestorFacil.model.enums.TipoTransacao;
 import com.JhonCodari.GestorFacil.model.valueobjects.EmailUsuario;
 import com.JhonCodari.GestorFacil.repository.TransacaoRepository;
 import com.JhonCodari.GestorFacil.service.AnaliseFinanceiraService;
+import com.JhonCodari.GestorFacil.service.CambioConversorService;
 import com.JhonCodari.GestorFacil.service.ContaBancariaService;
 import com.JhonCodari.GestorFacil.service.UsuarioService;
 
@@ -29,14 +31,17 @@ public class AnaliseFinanceiraServiceImpl implements AnaliseFinanceiraService {
     private final TransacaoRepository transacaoRepository;
     private final UsuarioService usuarioService;
     private final ContaBancariaService contaBancariaService;
+    private final CambioConversorService cambioConversorService;
 
     public AnaliseFinanceiraServiceImpl(
             TransacaoRepository transacaoRepository,
             UsuarioService usuarioService,
-            ContaBancariaService contaBancariaService) {
+            ContaBancariaService contaBancariaService,
+            CambioConversorService cambioConversorService) {
         this.transacaoRepository = transacaoRepository;
         this.usuarioService = usuarioService;
         this.contaBancariaService = contaBancariaService;
+        this.cambioConversorService = cambioConversorService;
     }
 
     @Override
@@ -65,6 +70,37 @@ public class AnaliseFinanceiraServiceImpl implements AnaliseFinanceiraService {
             dataInicio,
             dataFim,
             porCategoria
+        );
+    }
+
+     @Override
+    @Transactional(readOnly = true)
+    public AnaliseFinanceiraConvertidaRespostaDTO analisarConvertida(
+            String emailUsuario, LocalDate dataInicio, LocalDate dataFim, String moeda) {
+        AnaliseFinanceiraRespostaDTO analise = analisar(emailUsuario, dataInicio, dataFim);
+        BigDecimal taxa = cambioConversorService.buscarTaxaFechamentoPTAX(moeda);
+
+        List<AnaliseCategoriaDTO> categoriasConvertidas = analise.porCategoria().stream()
+            .map(c -> new AnaliseCategoriaDTO(
+                c.categoria(),
+                c.tipo(),
+                cambioConversorService.converter(c.total(), taxa),
+                c.percentualDoTotal(),
+                c.quantidade()
+            ))
+            .collect(Collectors.toList());
+
+        return new AnaliseFinanceiraConvertidaRespostaDTO(
+            moeda.toUpperCase(),
+            cambioConversorService.converter(analise.totalReceitas(), taxa),
+            cambioConversorService.converter(analise.totalDespesas(), taxa),
+            cambioConversorService.converter(analise.totalTransferencias(), taxa),
+            cambioConversorService.converter(analise.saldo(), taxa),
+            cambioConversorService.converter(analise.saldoContaBancaria(), taxa),
+            analise.quantidadeTransacoes(),
+            analise.periodoInicio(),
+            analise.periodoFim(),
+            categoriasConvertidas
         );
     }
 
@@ -128,5 +164,5 @@ public class AnaliseFinanceiraServiceImpl implements AnaliseFinanceiraService {
             .max(Map.Entry.comparingByValue())
             .map(Map.Entry::getKey)
             .orElseThrow();
-    }
+    }   
 }

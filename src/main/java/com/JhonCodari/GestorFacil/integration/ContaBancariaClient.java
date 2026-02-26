@@ -2,6 +2,7 @@ package com.JhonCodari.GestorFacil.integration;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
@@ -15,7 +16,10 @@ public class ContaBancariaClient {
 
     private final RestClient restClient;
 
-    public ContaBancariaClient(RestClient contaBancariaRestClient) {
+    public ContaBancariaClient(
+        @Qualifier("contaBancariaRestClient")
+        RestClient contaBancariaRestClient
+    ) {
         this.restClient = contaBancariaRestClient;
     }
 

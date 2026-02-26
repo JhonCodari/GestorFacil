@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.JhonCodari.GestorFacil.dto.AnaliseFinanceiraConvertidaRespostaDTO;
 import com.JhonCodari.GestorFacil.dto.AnaliseFinanceiraRespostaDTO;
 import com.JhonCodari.GestorFacil.service.AnaliseFinanceiraService;
 
@@ -27,11 +28,37 @@ public class AnaliseFinanceiraController {
 
     @GetMapping("/financeira")
     public ResponseEntity<AnaliseFinanceiraRespostaDTO> analisar(
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataInicio,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataFim,
-            Principal principal) {
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate dataInicio,
+
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate dataFim,
+
+            Principal principal
+        ) {
         return ResponseEntity.ok(
             analiseFinanceiraService.analisar(principal.getName(), dataInicio, dataFim)
+        );
+    }
+
+    @GetMapping("/financeira/convertida")
+    public ResponseEntity<AnaliseFinanceiraConvertidaRespostaDTO> analisarConvertida(
+            @RequestParam String moeda,
+
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate dataInicio,
+
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate dataFim,
+
+            Principal principal
+        ) {
+        return ResponseEntity.ok(
+            analiseFinanceiraService.analisarConvertida(principal.getName(), dataInicio, dataFim, moeda)
         );
     }
 }
