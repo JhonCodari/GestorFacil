@@ -1,5 +1,8 @@
 package com.JhonCodari.GestorFacil.service.impl;
 
+import java.util.List;
+
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
@@ -16,13 +19,13 @@ public class ContaBancariaClient {
         this.restClient = contaBancariaRestClient;
     }
 
-    public ContaBancariaDTO buscarContaPorId(String idConta) {
+    public List<ContaBancariaDTO> buscarContasPorUsuarioId(String usuarioId) {
         try {
             return restClient
                 .get()
-                .uri("/contas-bancarias/{id}", idConta)
+                .uri("/contas-bancarias?usuarioId={usuarioId}", usuarioId)
                 .retrieve()
-                .body(ContaBancariaDTO.class);
+                .body(new ParameterizedTypeReference<List<ContaBancariaDTO>>() {});
         } catch (RestClientException ex) {
             throw new ContaBancariaIntegracaoException(
                 "Nao foi possivel consultar os dados da conta bancaria. Tente novamente mais tarde.", ex);

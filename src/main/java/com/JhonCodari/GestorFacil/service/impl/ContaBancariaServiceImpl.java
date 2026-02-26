@@ -1,10 +1,13 @@
 package com.JhonCodari.GestorFacil.service.impl;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.JhonCodari.GestorFacil.dto.ContaBancariaDTO;
 import com.JhonCodari.GestorFacil.dto.ContaBancariaRespostaDTO;
+import com.JhonCodari.GestorFacil.exception.ContaBancariaIntegracaoException;
 import com.JhonCodari.GestorFacil.exception.ContaBancariaNaoVinculadaException;
 import com.JhonCodari.GestorFacil.model.UsuarioEntity;
 import com.JhonCodari.GestorFacil.model.valueobjects.EmailUsuario;
@@ -28,7 +31,11 @@ public class ContaBancariaServiceImpl implements ContaBancariaService {
     @Transactional
     public void vincular(EmailUsuario emailUsuario, String idConta) {
         UsuarioEntity usuario = buscarUsuario(emailUsuario);
-        contaBancariaClient.buscarContaPorId(idConta);
+        List<ContaBancariaDTO> contas = contaBancariaClient.buscarContasPorUsuarioId(idConta);
+        if (contas == null || contas.isEmpty()) {
+            throw new ContaBancariaIntegracaoException(
+                "Nenhuma conta bancaria encontrada para o usuarioId informado.");
+        }
         usuario.vincularContaBancaria(idConta);
         usuarioRepository.save(usuario);
     }
@@ -53,8 +60,12 @@ public class ContaBancariaServiceImpl implements ContaBancariaService {
             throw new ContaBancariaNaoVinculadaException(
                 "Nenhuma conta bancaria esta vinculada a este usuario.");
         }
-        ContaBancariaDTO conta = contaBancariaClient.buscarContaPorId(usuario.getIdContaBancaria());
-        return toRespostaDTO(conta);
+        List<ContaBancariaDTO> contas = contaBancariaClient.buscarContasPorUsuarioId(usuario.getIdContaBancaria());
+        if (contas == null || contas.isEmpty()) {
+            throw new ContaBancariaNaoVinculadaException(
+                "Nenhuma conta bancaria encontrada para o usuario.");
+        }
+        return toRespostaDTO(contas.get(0));
     }
 
     private UsuarioEntity buscarUsuario(EmailUsuario emailUsuario) {
