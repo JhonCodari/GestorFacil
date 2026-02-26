@@ -9,9 +9,19 @@ import com.JhonCodari.GestorFacil.model.enums.TipoTransacao;
 import jakarta.validation.constraints.*;
 
 public record TransacaoCadastroDTO(
-    @NotBlank String descricao,
-    @NotNull @Positive BigDecimal valor,
-    @NotNull TipoTransacao tipo,
-    @NotNull CategoriaTransacao categoria,
-    @NotNull LocalDate data
+     
+    String descricao,
+
+    @NotNull 
+    @Positive 
+    BigDecimal valor,
+
+    @NotNull 
+    TipoTransacao tipo,
+
+    @NotNull 
+    CategoriaTransacao categoria,
+
+    @NotNull 
+    LocalDate data
 ) {}
