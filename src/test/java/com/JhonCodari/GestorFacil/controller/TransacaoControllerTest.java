@@ -173,8 +173,11 @@ class TransacaoControllerTest {
 
         var payload = """
             {
-                "descricao": "Salario atualizado",
-                "valor": 6000.00
+                "valor": 15000.90,
+                "descricao": "credito de salario mensal em conta",
+                "categoria": "SALARIO",
+                "data": "2024-06-24",
+                "tipo": "CREDITO"
             }
             """;
 

@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import com.JhonCodari.GestorFacil.model.enums.CategoriaTransacao;
 import com.JhonCodari.GestorFacil.model.enums.TipoTransacao;
 
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 public record TransacaoAtualizacaoDTO(
@@ -15,10 +15,10 @@ public record TransacaoAtualizacaoDTO(
     @Positive 
     BigDecimal valor,
 
-    @NotBlank(message = "O tipo da transação não pode ser vazio ou nulo.")
+    @NotNull(message = "O tipo da transação não pode ser nulo.")
     TipoTransacao tipo,
 
-    @NotBlank(message = "A categoria da transação não pode ser vazia ou nula.")
+    @NotNull(message = "A categoria da transação não pode ser nula.")
     CategoriaTransacao categoria,
     
     LocalDate data
