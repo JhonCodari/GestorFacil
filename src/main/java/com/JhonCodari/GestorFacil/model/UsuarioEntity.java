@@ -40,6 +40,9 @@ public class UsuarioEntity {
     @Column(name = "email_verificado", nullable = false)
     private boolean emailVerificado;
 
+    @Column(name = "id_conta_bancaria", nullable = true, length = 50)
+    private String idContaBancaria;
+
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RefreshTokenEntity> refreshTokens = new ArrayList<>();
 
@@ -89,6 +92,22 @@ public class UsuarioEntity {
 
     public void atualizarSenha(Senha novaSenha) {
         this.senhaHash = novaSenha.hash();
+    }
+
+    public String getIdContaBancaria() {
+        return idContaBancaria;
+    }
+
+    public boolean possuiContaBancariaVinculada() {
+        return idContaBancaria != null && !idContaBancaria.isBlank();
+    }
+
+    public void vincularContaBancaria(String idContaBancaria) {
+        this.idContaBancaria = idContaBancaria;
+    }
+
+    public void desvincularContaBancaria() {
+        this.idContaBancaria = null;
     }
     
 }
