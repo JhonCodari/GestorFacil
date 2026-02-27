@@ -109,5 +109,14 @@ public class UsuarioEntity {
     public void desvincularContaBancaria() {
         this.idContaBancaria = null;
     }
+
+    public void atualizarNome(NomeCompleto nomeCompleto) {
+        this.nomeCompleto = nomeCompleto;
+    }
+
+    public void atualizarEmail(EmailUsuario email) {
+        this.email = email;
+        this.emailVerificado = false;
+    }
     
 }

@@ -16,6 +16,7 @@ import com.JhonCodari.GestorFacil.model.valueobjects.EmailUsuario;
 import com.JhonCodari.GestorFacil.model.valueobjects.NomeCompleto;
 import com.JhonCodari.GestorFacil.model.valueobjects.Senha;
 import com.JhonCodari.GestorFacil.repository.TransacaoRepository;
+import com.JhonCodari.GestorFacil.service.CambioConversorService;
 import com.JhonCodari.GestorFacil.service.UsuarioService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,8 +30,7 @@ import org.springframework.data.domain.PageRequest;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -41,6 +41,9 @@ class TransacaoServiceImplTest {
 
     @Mock
     private UsuarioService usuarioService;
+
+    @Mock
+    private CambioConversorService cambioConversorService;
 
     @InjectMocks
     private TransacaoServiceImpl transacaoService;
@@ -189,5 +192,42 @@ class TransacaoServiceImplTest {
         );
 
         verify(transacaoRepository, never()).delete(any());
+    }
+
+    @Test
+    void deveFiltrarTransacoesPorParametros() {
+        var pageable = PageRequest.of(0, 10);
+        var pagina = new PageImpl<>(List.of(transacao));
+        var dataInicio = LocalDate.of(2026, 1, 1);
+        var dataFim = LocalDate.of(2026, 2, 28);
+
+        when(usuarioService.consultarUsuarioPorEmail(any(EmailUsuario.class))).thenReturn(usuario);
+        when(transacaoRepository.filtrar(
+            eq(usuario.getId()), eq(TipoTransacao.CREDITO), eq(CategoriaTransacao.DEPOSITO),
+            eq(dataInicio), eq(dataFim), eq(pageable)
+        )).thenReturn(pagina);
+
+        var resultado = transacaoService.filtrar(
+            "joao@email.com", TipoTransacao.CREDITO, CategoriaTransacao.DEPOSITO, dataInicio, dataFim, pageable);
+
+        assertNotNull(resultado);
+        assertEquals(1, resultado.getTotalElements());
+        assertEquals("Salario", resultado.getContent().getFirst().descricao());
+    }
+
+    @Test
+    void deveFiltrarComParametrosParciais() {
+        var pageable = PageRequest.of(0, 10);
+        var pagina = new PageImpl<>(List.of(transacao));
+
+        when(usuarioService.consultarUsuarioPorEmail(any(EmailUsuario.class))).thenReturn(usuario);
+        when(transacaoRepository.filtrar(
+            eq(usuario.getId()), eq(TipoTransacao.CREDITO), isNull(), isNull(), isNull(), eq(pageable)
+        )).thenReturn(pagina);
+
+        var resultado = transacaoService.filtrar("joao@email.com", TipoTransacao.CREDITO, null, null, null, pageable);
+
+        assertNotNull(resultado);
+        assertEquals(1, resultado.getTotalElements());
     }
 }

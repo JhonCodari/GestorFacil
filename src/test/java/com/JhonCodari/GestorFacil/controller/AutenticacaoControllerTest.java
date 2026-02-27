@@ -1,5 +1,8 @@
 package com.JhonCodari.GestorFacil.controller;
 
+import com.JhonCodari.GestorFacil.exception.CredenciaisInvalidasException;
+import com.JhonCodari.GestorFacil.exception.EmailNaoVerificadoException;
+import com.JhonCodari.GestorFacil.exception.GlobalExceptionHandler;
 import com.JhonCodari.GestorFacil.model.valueobjects.*;
 import com.JhonCodari.GestorFacil.service.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,7 +47,9 @@ class AutenticacaoControllerTest {
 
     @BeforeEach
     void configurar() {
-        mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(controller)
+            .setControllerAdvice(new GlobalExceptionHandler())
+            .build();
     }
 
     @Test
@@ -131,6 +136,95 @@ class AutenticacaoControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(payload))
             .andExpect(status().isOk());
+    }
+
+    @Test
+    void deveRetornar401QuandoCredenciaisInvalidas() throws Exception {
+        when(autenticacaoService.autenticar(any())).thenThrow(new CredenciaisInvalidasException("usuario ou senha invalidos."));
+
+        var payload = """
+            {
+                "email": {"valor": "joao@email.com"},
+                "senha": {"valor": "SenhaErrada@1"}
+            }
+            """;
+
+        mockMvc.perform(post("/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payload))
+            .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void deveRetornar401QuandoEmailNaoCadastrado() throws Exception {
+        when(autenticacaoService.autenticar(any())).thenThrow(new CredenciaisInvalidasException("usuario ou senha invalidos."));
+
+        var payload = """
+            {
+                "email": {"valor": "naoexiste@email.com"},
+                "senha": {"valor": "Senha@123"}
+            }
+            """;
+
+        mockMvc.perform(post("/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payload))
+            .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void deveRetornar403QuandoEmailNaoVerificado() throws Exception {
+        when(autenticacaoService.autenticar(any())).thenThrow(new EmailNaoVerificadoException("Email nao verificado."));
+
+        var payload = """
+            {
+                "email": {"valor": "joao@email.com"},
+                "senha": {"valor": "Senha@123"}
+            }
+            """;
+
+        mockMvc.perform(post("/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payload))
+            .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void deveRetornar400QuandoEmailVazioNoLogin() throws Exception {
+        var payload = """
+            {
+                "email": {"valor": ""},
+                "senha": {"valor": "Senha@123"}
+            }
+            """;
+
+        mockMvc.perform(post("/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payload))
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void deveRetornar400QuandoSenhaVaziaNoLogin() throws Exception {
+        var payload = """
+            {
+                "email": {"valor": "joao@email.com"},
+                "senha": {"valor": ""}
+            }
+            """;
+
+        mockMvc.perform(post("/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payload))
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void deveRetornar400QuandoPayloadMalformado() throws Exception {
+        mockMvc.perform(post("/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{ json invalido"))
+            .andExpect(status().isBadRequest());
     }
 }
 

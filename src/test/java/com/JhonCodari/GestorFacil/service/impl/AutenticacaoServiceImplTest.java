@@ -94,6 +94,15 @@ class AutenticacaoServiceImplTest {
     }
 
     @Test
+    void deveLancarExcecaoQuandoEmailNaoCadastrado() {
+        when(usuarioRepository.findByEmailValor("joao@email.com")).thenReturn(null);
+
+        assertThrows(CredenciaisInvalidasException.class, () ->
+            autenticacaoService.autenticar(loginDTO)
+        );
+    }
+
+    @Test
     void deveInvalidarTokenNoLogout() {
         var tokenJwt = "header.payload.signature";
         var token = new Token("Bearer " + tokenJwt);

@@ -35,13 +35,16 @@ public class AutenticacaoServiceImpl implements AutenticacaoService {
     public String autenticar(UsuarioLoginDTO usuarioLogin) {
         var usuarioCadastrado = usuarioRepository.findByEmailValor(usuarioLogin.getEnderecoEmail());
         
+        if (usuarioCadastrado == null)
+            throw new CredenciaisInvalidasException("usuario ou senha invalidos.");
+        
         if (!usuarioCadastrado.isEmailVerificado()) 
-            throw new EmailNaoVerificadoException("Email não verificado. Verifique seu email antes de fazer login.");
+            throw new EmailNaoVerificadoException("Email nao verificado. Verifique seu email antes de fazer login.");
         
         if(usuarioLogin.senha().confere(usuarioCadastrado.getSenhaHash()))
             return accessTokenService.criar(usuarioCadastrado.getEmail()).valor();
         
-        throw new CredenciaisInvalidasException("usuario ou senha inválidos.");
+        throw new CredenciaisInvalidasException("usuario ou senha invalidos.");
     }
 
     @Override

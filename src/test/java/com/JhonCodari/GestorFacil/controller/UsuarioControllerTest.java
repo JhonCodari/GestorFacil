@@ -1,6 +1,8 @@
 package com.JhonCodari.GestorFacil.controller;
 
 import com.JhonCodari.GestorFacil.dto.UsuarioRespostaDTO;
+import com.JhonCodari.GestorFacil.exception.GlobalExceptionHandler;
+import com.JhonCodari.GestorFacil.exception.UsuarioNaoEncontradoException;
 import com.JhonCodari.GestorFacil.model.UsuarioEntity;
 import com.JhonCodari.GestorFacil.model.valueobjects.*;
 import com.JhonCodari.GestorFacil.service.UsuarioService;
@@ -16,7 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -30,10 +32,14 @@ class UsuarioControllerTest {
     private UsuarioController controller;
 
     private MockMvc mockMvc;
+    private UsernamePasswordAuthenticationToken principal;
 
     @BeforeEach
     void configurar() {
-        mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(controller)
+            .setControllerAdvice(new GlobalExceptionHandler())
+            .build();
+        principal = new UsernamePasswordAuthenticationToken("joao@email.com", null);
     }
 
     @Test
@@ -69,7 +75,6 @@ class UsuarioControllerTest {
         var email = new EmailUsuario("joao@email.com");
         var senha = new Senha("Senha@123");
         var usuario = new UsuarioEntity(nomeCompleto, email, senha);
-        var principal = new UsernamePasswordAuthenticationToken("joao@email.com", null);
 
         when(usuarioService.consultarUsuarioPorEmail(any())).thenReturn(usuario);
 
@@ -77,126 +82,48 @@ class UsuarioControllerTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.email.valor").value("joao@email.com"));
     }
+
+    @Test
+    void deveAtualizarUsuarioComSucesso() throws Exception {
+        var nomeCompleto = new NomeCompleto("Maria", "Santos");
+        var email = new EmailUsuario("joao@email.com");
+        var resposta = new UsuarioRespostaDTO(1L, nomeCompleto, email);
+
+        when(usuarioService.atualizarUsuario(any(), any())).thenReturn(resposta);
+
+        var payload = """
+            {
+                "nomeCompleto": {
+                    "primeiroNome": "Maria",
+                    "sobrenome": "Santos"
+                }
+            }
+            """;
+
+        mockMvc.perform(put("/usuario")
+                .principal(principal)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payload))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.nomeCompleto.primeiroNome").value("Maria"));
+    }
+
+    @Test
+    void deveExcluirUsuarioComSucesso() throws Exception {
+        doNothing().when(usuarioService).excluirUsuario(any());
+
+        mockMvc.perform(delete("/usuario").principal(principal))
+            .andExpect(status().isNoContent());
+
+        verify(usuarioService, times(1)).excluirUsuario(any());
+    }
+
+    @Test
+    void deveRetornar404QuandoUsuarioNaoEncontrado() throws Exception {
+        when(usuarioService.consultarUsuarioPorEmail(any()))
+            .thenThrow(new UsuarioNaoEncontradoException("Usuario nao encontrado."));
+
+        mockMvc.perform(get("/usuario").principal(principal))
+            .andExpect(status().isNotFound());
+    }
 }
-
-
-// @WebMvcTest(value = UsuarioController.class, excludeAutoConfiguration = SecurityAutoConfiguration.class)
-// class UsuarioControllerTest {
-
-//     @Autowired
-//     private MockMvc mockMvc;
-
-//     @MockitoBean
-//     private UsuarioService usuarioService;
-
-//     @Test
-//     void deveCadastrarUsuarioComSucesso() throws Exception {
-//         var nomeCompleto = new NomeCompleto("Joao", "Silva");
-//         var email = new Email("joao@email.com");
-//         var resposta = new UsuarioRespostaDTO(1L, nomeCompleto, email);
-
-//         when(usuarioService.cadastrarUsuario(any())).thenReturn(resposta);
-
-//         var payload = """
-//             {
-//                 "nomeCompleto": {
-//                     "primeiroNome": "Joao",
-//                     "sobrenome": "Silva"
-//                 },
-//                 "email": {"valor": "joao@email.com"},
-//                 "senha": {"valor": "Senha@123"}
-//             }
-//             """;
-
-//         mockMvc.perform(post("/usuario/cadastro")
-//                 .contentType(MediaType.APPLICATION_JSON)
-//                 .content(payload))
-//             .andExpect(status().isCreated())
-//             .andExpect(jsonPath("$.id").value(1L))
-//             .andExpect(jsonPath("$.email.valor").value("joao@email.com"));
-//     }
-
-//     @Test
-//     void deveRetornarPerfilDoUsuarioAutenticado() throws Exception {
-//         var nomeCompleto = new NomeCompleto("Joao", "Silva");
-//         var email = new Email("joao@email.com");
-//         var senha = new Senha("Senha@123");
-//         var usuario = new UsuarioEntity(nomeCompleto, email, senha);
-//         var principal = new UsernamePasswordAuthenticationToken("joao@email.com", null);
-
-//         when(usuarioService.consultarUsuarioPorEmail(any())).thenReturn(usuario);
-
-//         mockMvc.perform(get("/usuario").principal(principal))
-//             .andExpect(status().isOk())
-//             .andExpect(jsonPath("$.email.valor").value("joao@email.com"));
-//     }
-// }
-
-
-// @WebMvcTest(value = UsuarioController.class, excludeAutoConfiguration = SecurityAutoConfiguration.class)
-// class UsuarioControllerTest {
-
-//     @Autowired
-//     private MockMvc mockMvc;
-
-//     @MockitoBean
-//     private UsuarioService usuarioService;
-
-//     @MockitoBean
-//     private JwtAuthenticationFilter jwtAuthenticationFilter;
-
-//     @MockitoBean
-//     private JwtTokenProvider jwtTokenProvider;
-
-//     @Test
-//     void deveCadastrarUsuarioComSucesso() throws Exception {
-//         var nomeCompleto = new NomeCompleto("Joao", "Silva");
-//         var email = new EmailUsuario("joao@email.com");
-//         var resposta = new UsuarioRespostaDTO(1L, nomeCompleto, email);
-
-//         when(usuarioService.cadastrarUsuario(any())).thenReturn(resposta);
-
-//         var payload = """
-//             {
-//                 "nomeCompleto": {
-//                     "primeiroNome": "Joao",
-//                     "sobrenome": "Silva"
-//                 },
-//                 "email": {"valor": "joao@email.com"},
-//                 "senha": {"valor": "Senha@123"}
-//             }
-//             """;
-
-//         mockMvc.perform(post("/usuario/cadastro")
-//                 .contentType(MediaType.APPLICATION_JSON)
-//                 .content(payload)
-//                 .with(csrf()))
-//             .andExpect(status().isCreated())
-//             .andExpect(jsonPath("$.id").value(1L))
-//             .andExpect(jsonPath("$.email.valor").value("joao@email.com"));
-//     }
-
-//     @Test
-//     @WithMockUser(username = "joao@email.com")
-//     void deveRetornarPerfilDoUsuarioAutenticado() throws Exception {
-//         var nomeCompleto = new NomeCompleto("Joao", "Silva");
-//         var email = new EmailUsuario("joao@email.com");
-//         var senha = new Senha("Senha@123");
-//         var usuario = new UsuarioEntity(nomeCompleto, email, senha);
-
-//         when(usuarioService.consultarUsuarioPorEmail(any())).thenReturn(usuario);
-
-//         mockMvc.perform(get("/usuario").principal(principal))
-//             .andExpect(status().isOk())
-//             .andExpect(jsonPath("$.email.valor").value("joao@email.com"));
-//     }
-
-
-    // @Test
-    // void deveRetornar401AoAcessarPerfilSemAutenticacao() throws Exception {
-    //     mockMvc.perform(get("/usuario"))
-    //         .andExpect(status().isUnauthorized());
-    // }
-
-    
-//}

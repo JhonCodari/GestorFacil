@@ -2,6 +2,7 @@ package com.JhonCodari.GestorFacil.service.impl;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +18,8 @@ import com.JhonCodari.GestorFacil.exception.TransacaoNaoPertenceAoUsuarioExcepti
 import com.JhonCodari.GestorFacil.mapper.TransacaoMapper;
 import com.JhonCodari.GestorFacil.model.TransacaoEntity;
 import com.JhonCodari.GestorFacil.model.UsuarioEntity;
+import com.JhonCodari.GestorFacil.model.enums.CategoriaTransacao;
+import com.JhonCodari.GestorFacil.model.enums.TipoTransacao;
 import com.JhonCodari.GestorFacil.model.valueobjects.EmailUsuario;
 import com.JhonCodari.GestorFacil.repository.TransacaoRepository;
 import com.JhonCodari.GestorFacil.service.CambioConversorService;
@@ -61,6 +64,15 @@ public class TransacaoServiceImpl implements TransacaoService {
     public Page<TransacaoRespostaDTO> listar(String emailUsuario, Pageable pageable) {
         UsuarioEntity usuario = usuarioService.consultarUsuarioPorEmail(new EmailUsuario(emailUsuario));
         return transacaoRepository.findAllByUsuarioId(usuario.getId(), pageable)
+            .map(TransacaoMapper::toDTO);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<TransacaoRespostaDTO> filtrar(String emailUsuario, TipoTransacao tipo, CategoriaTransacao categoria,
+                                              LocalDate dataInicio, LocalDate dataFim, Pageable pageable) {
+        UsuarioEntity usuario = usuarioService.consultarUsuarioPorEmail(new EmailUsuario(emailUsuario));
+        return transacaoRepository.filtrar(usuario.getId(), tipo, categoria, dataInicio, dataFim, pageable)
             .map(TransacaoMapper::toDTO);
     }
 

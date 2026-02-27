@@ -4,12 +4,14 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
 
+import com.JhonCodari.GestorFacil.dto.ImportacaoResultadoDTO;
 import com.JhonCodari.GestorFacil.dto.TransacaoRespostaDTO;
 import com.JhonCodari.GestorFacil.exception.GlobalExceptionHandler;
 import com.JhonCodari.GestorFacil.exception.TransacaoNaoEncontradaException;
 import com.JhonCodari.GestorFacil.exception.TransacaoNaoPertenceAoUsuarioException;
 import com.JhonCodari.GestorFacil.model.enums.CategoriaTransacao;
 import com.JhonCodari.GestorFacil.model.enums.TipoTransacao;
+import com.JhonCodari.GestorFacil.service.ImportacaoExcelService;
 import com.JhonCodari.GestorFacil.service.TransacaoService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,10 +32,10 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -41,6 +43,9 @@ class TransacaoControllerTest {
 
     @Mock
     private TransacaoService transacaoService;
+
+    @Mock
+    private ImportacaoExcelService importacaoExcelService;
 
     @InjectMocks
     private TransacaoController controller;
@@ -118,7 +123,7 @@ class TransacaoControllerTest {
         var pagina = new PageImpl<>(List.of(respostaDTO));
         when(transacaoService.listar(eq("joao@email.com"), any(Pageable.class))).thenReturn(pagina);
 
-        var resultado = controller.listar(PageRequest.of(0, 10), principal);
+        var resultado = controller.listar(null, null, null, null, PageRequest.of(0, 10), principal);
 
         assertEquals(HttpStatus.OK, resultado.getStatusCode());
         assertNotNull(resultado.getBody());
@@ -207,5 +212,38 @@ class TransacaoControllerTest {
         mockMvc.perform(delete("/transacoes/1")
                 .principal(principal))
             .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void deveListarTransacoesComFiltro() {
+        var pagina = new PageImpl<>(List.of(respostaDTO));
+        when(transacaoService.filtrar(eq("joao@email.com"), eq(TipoTransacao.CREDITO), isNull(), isNull(), isNull(), any(Pageable.class)))
+            .thenReturn(pagina);
+
+        var resultado = controller.listar(TipoTransacao.CREDITO, null, null, null, PageRequest.of(0, 10), principal);
+
+        assertEquals(HttpStatus.OK, resultado.getStatusCode());
+        assertNotNull(resultado.getBody());
+        assertEquals(1, resultado.getBody().getTotalElements());
+        assertEquals("Salario", resultado.getBody().getContent().getFirst().descricao());
+    }
+
+    @Test
+    void deveImportarTransacoesComSucesso() throws Exception {
+        var resultado = new ImportacaoResultadoDTO(5, 5, 0, List.of());
+        when(importacaoExcelService.importarTransacoes(any(), eq("joao@email.com"))).thenReturn(resultado);
+
+        var arquivo = new org.springframework.mock.web.MockMultipartFile(
+            "arquivo", "transacoes.xlsx",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            "conteudo-fake".getBytes());
+
+        mockMvc.perform(multipart("/transacoes/importar")
+                .file(arquivo)
+                .principal(principal))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.totalLinhas").value(5))
+            .andExpect(jsonPath("$.sucesso").value(5))
+            .andExpect(jsonPath("$.erros").value(0));
     }
 }
