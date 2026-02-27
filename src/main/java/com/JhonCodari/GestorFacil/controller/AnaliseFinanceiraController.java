@@ -15,9 +15,13 @@ import com.JhonCodari.GestorFacil.dto.AnaliseFinanceiraConvertidaRespostaDTO;
 import com.JhonCodari.GestorFacil.dto.AnaliseFinanceiraRespostaDTO;
 import com.JhonCodari.GestorFacil.service.AnaliseFinanceiraService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/analises")
 @PreAuthorize("isAuthenticated()")
+@Tag(name = "Analise Financeira", description = "Analise de receitas, despesas e saldo por periodo")
 public class AnaliseFinanceiraController {
 
     private final AnaliseFinanceiraService analiseFinanceiraService;
@@ -27,6 +31,7 @@ public class AnaliseFinanceiraController {
     }
 
     @GetMapping("/financeira")
+    @Operation(summary = "Analisar financas por periodo (em BRL)")
     public ResponseEntity<AnaliseFinanceiraRespostaDTO> analisar(
             @RequestParam(required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
@@ -44,6 +49,7 @@ public class AnaliseFinanceiraController {
     }
 
     @GetMapping("/financeira/convertida")
+    @Operation(summary = "Analisar financas por periodo com conversao de moeda")
     public ResponseEntity<AnaliseFinanceiraConvertidaRespostaDTO> analisarConvertida(
             @RequestParam String moeda,
 
